@@ -194,6 +194,14 @@ namespace Rk
   // Algorithms
   //
   template <typename OutIter, typename InIter>
+  OutIter copy (OutIter dest, InIter src, uptr length)
+  {
+    while (length--)
+      *dest++ = *src++;
+    return dest;
+  }
+
+  template <typename OutIter, typename InIter>
   OutIter copy (OutIter dest, OutIter limit, InIter begin, InIter end)
   {
     while (dest != limit && begin != end)
@@ -205,6 +213,18 @@ namespace Rk
   OutIter copy (OutIter dest, uptr length, InIter begin, InIter end)
   {
     return copy (dest, dest + length, begin, end);
+  }
+
+  template <typename OutIter, typename InIter>
+  OutIter copy (OutIter dest, OutIter limit, InIter begin, uptr size)
+  {
+    return copy (dest, limit, begin, begin + size);
+  }
+
+  template <typename OutIter, typename InIter>
+  OutIter copy (OutIter dest, uptr length, InIter begin, uptr size)
+  {
+    return copy (dest, dest + length, begin, begin + size);
   }
 
   // Container variants
