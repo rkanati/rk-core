@@ -14,6 +14,7 @@
 #include <Rk/TypeTraits.hpp>
 #include <Rk/Types.hpp>
 
+#include <algorithm>
 #include <memory>
 
 namespace Rk
