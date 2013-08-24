@@ -15,31 +15,43 @@
 
 namespace Rk
 {
-  template <typename T, typename Test>
-  struct TypeTrait :
-    public std::conditional <
-      std::is_void <decltype (Test::test ((T*) 0))>::value,
-      std::true_type,
-      std::false_type
-    >::type
-  { };
+  template <typename T>
+  auto declval () -> typename std::add_rvalue_reference <T>::type;
 
-  struct IsIterableTest
+  template <typename Test>
+  struct Trait
   {
     template <typename T>
-    static void test (
-      T* p,
-      decltype (std::begin (*p))* = 0,
-      decltype (std::end   (*p))* = 0
-    );
-
-    static int test (...);
+    struct Type :
+      std::is_void <decltype (Test::test ((T*) 0))>
+    { };
 
   };
 
+  namespace TraitsPrivate
+  {
+    struct Iterable
+    {
+      template <typename T>
+      static void test (
+        T* t,
+        decltype (std::begin (*t))* b = 0,
+        decltype (std::end   (*t))* e = 0/*,
+        decltype (**b)* = 0,
+        decltype (**e)* = 0,
+        decltype (*b == *e)* = 0,
+        decltype (++*b)* = 0*/
+      );
+
+      static int test (...);
+
+    };
+
+  }
+
   template <typename T>
   struct IsIterable :
-    TypeTrait <T, IsIterableTest>
+    Trait <TraitsPrivate::Iterable>::Type <T>
   { };
 
 }
