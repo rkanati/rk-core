@@ -60,7 +60,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\Rk\AsyncMethod.hpp" />
     <ClInclude Include="..\Include\Rk\BigEndian.hpp" />
     <ClInclude Include="..\Include\Rk\Clamp.hpp" />
     <ClInclude Include="..\Include\Rk\Guard.hpp" />
