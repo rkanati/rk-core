@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include <Rk/TypeTraits.hpp>
 #include <Rk/Memory.hpp>
 #include <Rk/Types.hpp>
 
@@ -65,6 +66,15 @@ namespace Rk
         len (s.length ())
       { }
     #endif
+    
+    template <typename Cont>
+    explicit StringRefBase (
+      const Cont& cont,
+      typename std::enable_if <Rk::IsIterable <Cont>::value>::type* = 0
+    ) :
+      ptr (std::begin (cont)),
+      len (std::end (cont) - ptr)
+    { }
     
     StringRefBase& operator = (Nil)
     {
