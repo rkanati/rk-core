@@ -61,20 +61,13 @@ namespace Rk
     { }
     
     #ifndef RK_STRINGREF_NO_STDSTRING
-      StringRefBase (const std::basic_string <Char>& s) :
-        ptr (s.data ()),
-        len (s.length ())
-      { }
-    #endif
     
-    template <typename Cont>
-    explicit StringRefBase (
-      const Cont& cont,
-      typename std::enable_if <Rk::IsIterable <Cont>::value>::type* = 0
-    ) :
-      ptr (std::begin (cont)),
-      len (std::end (cont) - ptr)
+    StringRefBase (const std::basic_string <Char>& s) :
+      ptr (s.data ()),
+      len (s.length ())
     { }
+    
+    #endif
     
     StringRefBase& operator = (Nil)
     {
@@ -160,6 +153,38 @@ namespace Rk
     }
 
   };
+
+  template <typename Str>
+  struct StrCharType
+  {
+    static Str& val ();
+
+    typedef typename std::remove_const <
+      typename std::remove_reference <
+        decltype (val () [0])
+      >::type
+    >::type Type;
+
+  };
+
+  template <typename Arg>
+  auto make_stringref (Arg&& arg)
+    -> StringRefBase <typename StrCharType <Arg>::Type>
+  {
+    return StringRefBase <typename StrCharType <Arg>::Type> (
+      std::forward <Arg> (arg)
+    );
+  }
+
+  template <typename Arg0, typename Arg1>
+  auto make_stringref (Arg0&& arg0, Arg1&& arg1)
+    -> StringRefBase <typename StrCharType <Arg0>::Type>
+  {
+    return StringRefBase <typename StrCharType <Arg0>::Type> (
+      std::forward <Arg0> (arg0),
+      std::forward <Arg1> (arg1)
+    );
+  }
 
   #ifndef RK_STRINGREF_NO_STDSTRING
 
