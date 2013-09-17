@@ -63,6 +63,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Exception.cpp" />
+    <ClCompile Include="Memory.cpp" />
     <ClCompile Include="StringRef.cpp" />
     <ClCompile Include="TypeTraits.cpp" />
   </ItemGroup>

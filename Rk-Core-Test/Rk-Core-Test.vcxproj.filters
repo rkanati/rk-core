@@ -4,5 +4,6 @@
     <ClCompile Include="TypeTraits.cpp" />
     <ClCompile Include="StringRef.cpp" />
     <ClCompile Include="Exception.cpp" />
+    <ClCompile Include="Memory.cpp" />
   </ItemGroup>
 </Project>

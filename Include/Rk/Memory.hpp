@@ -245,6 +245,21 @@ namespace Rk
     return copy (dest, dest + length, cont);
   }
 
+  template <typename T>
+  class RawStorage
+  {
+    // is_trivially_copyable not implemented in MSVC10
+    static_assert (std::is_pod <T>::value, "RawStorage may only store trivially copyable types");
+
+    char store [sizeof (T) + __alignof (T) - 1];
+
+  public:
+    char* raw () { return align (store, __alignof (T)); }
+
+    T& value () { return *reinterpret_cast <T*> (raw ()); }
+
+  };
+
 } // namespace Rk
 
 using Rk::get_pointer;
