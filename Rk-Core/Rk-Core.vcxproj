@@ -62,6 +62,7 @@
   <ItemGroup>
     <ClInclude Include="..\Include\Rk\BigEndian.hpp" />
     <ClInclude Include="..\Include\Rk\Clamp.hpp" />
+    <ClInclude Include="..\Include\Rk\Exception.hpp" />
     <ClInclude Include="..\Include\Rk\Guard.hpp" />
     <ClInclude Include="..\Include\Rk\Lerp.hpp" />
     <ClInclude Include="..\Include\Rk\Memory.hpp" />

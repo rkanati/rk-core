@@ -10,5 +10,6 @@
     <ClInclude Include="..\Include\Rk\Types.hpp" />
     <ClInclude Include="..\Include\Rk\TypeTraits.hpp" />
     <ClInclude Include="..\Include\Rk\Method.hpp" />
+    <ClInclude Include="..\Include\Rk\Exception.hpp" />
   </ItemGroup>
 </Project>
