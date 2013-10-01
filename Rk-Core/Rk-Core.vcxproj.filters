@@ -3,13 +3,12 @@
   <ItemGroup>
     <ClInclude Include="..\Include\Rk\BigEndian.hpp" />
     <ClInclude Include="..\Include\Rk\Clamp.hpp" />
-    <ClInclude Include="..\Include\Rk\Guard.hpp" />
     <ClInclude Include="..\Include\Rk\Lerp.hpp" />
     <ClInclude Include="..\Include\Rk\Memory.hpp" />
     <ClInclude Include="..\Include\Rk\StringRef.hpp" />
     <ClInclude Include="..\Include\Rk\Types.hpp" />
     <ClInclude Include="..\Include\Rk\TypeTraits.hpp" />
-    <ClInclude Include="..\Include\Rk\Method.hpp" />
     <ClInclude Include="..\Include\Rk\Exception.hpp" />
+    <ClInclude Include="..\Include\Rk\Guard.hpp" />
   </ItemGroup>
 </Project>

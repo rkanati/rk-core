@@ -31,6 +31,7 @@ namespace Rk
     typedef unsigned int   uint;
     typedef unsigned long  ulong;
 
+    typedef wchar_t  wchar;
     typedef char16_t char16;
     typedef char32_t char32;
 
@@ -40,11 +41,20 @@ namespace Rk
     typedef float  f32; static_assert (sizeof (f32) == 4, "float not 32 bit" );
     typedef double f64; static_assert (sizeof (f64) == 8, "double not 64 bit");
 
-    template <uint bits> struct IntegerOfSize;
-    template <> struct IntegerOfSize < 8> { typedef u8  Unsigned; typedef i8  Signed; };
-    template <> struct IntegerOfSize <16> { typedef u16 Unsigned; typedef i16 Signed; };
-    template <> struct IntegerOfSize <32> { typedef u32 Unsigned; typedef i32 Signed; };
-    template <> struct IntegerOfSize <64> { typedef u64 Unsigned; typedef i64 Signed; };
+    template <uint bits> struct integer_of_size;
+    template <> struct integer_of_size < 8> { typedef u8  Unsigned; typedef i8  Signed; };
+    template <> struct integer_of_size <16> { typedef u16 Unsigned; typedef i16 Signed; };
+    template <> struct integer_of_size <32> { typedef u32 Unsigned; typedef i32 Signed; };
+    template <> struct integer_of_size <64> { typedef u64 Unsigned; typedef i64 Signed; };
+
+    template <uint bits>
+    using integer_of_size_t = typename integer_of_size <bits>::Signed;
+
+    template <uint bits>
+    using signed_of_size_t = typename integer_of_size <bits>::Signed;
+
+    template <uint bits>
+    using unsigned_of_size_t = typename integer_of_size <bits>::Unsigned;
 
     class Nil
     {

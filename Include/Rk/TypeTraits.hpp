@@ -27,31 +27,5 @@ namespace Rk
     { };
 
   };
-
-  namespace TraitsPrivate
-  {
-    struct Iterable
-    {
-      template <typename T>
-      static void test (
-        T* t,
-        decltype (std::begin (*t))* b = 0,
-        decltype (std::end   (*t))* e = 0/*,
-        decltype (**b)* = 0,
-        decltype (**e)* = 0,
-        decltype (*b == *e)* = 0,
-        decltype (++*b)* = 0*/
-      );
-
-      static int test (...);
-
-    };
-
-  }
-
-  template <typename T>
-  struct IsIterable :
-    Trait <TraitsPrivate::Iterable>::Type <T>
-  { };
-
+  
 }

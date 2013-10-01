@@ -9,8 +9,7 @@
 // in relation to such use.
 //
 
-#ifndef RK_H_BIGENDIAN
-#define RK_H_BIGENDIAN
+#pragma once
 
 #include <Rk/Types.hpp>
 
@@ -81,5 +80,3 @@ namespace Rk
   }
   
 }
-
-#endif

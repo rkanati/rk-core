@@ -14,14 +14,14 @@
 namespace Rk
 {
   template <typename T>
-  T clamp (T val, const T& lower, const T& upper)
+  T&& clamp (T&& val, T&& lower, T&& upper)
   {
     if (val < lower)
-      return lower;
+      return std::forward <T> (lower);
     else if (val > upper)
-      return upper;
+      return std::forward <T> (upper);
     else
-      return val;
+      return std::forward <T> (val);
   }
 
-} // namespace Rk
+}

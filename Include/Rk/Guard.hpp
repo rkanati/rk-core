@@ -16,18 +16,18 @@ namespace Rk
   template <typename Func>
   class Guard
   {
-    Guard (const Guard&);
-    Guard& operator = (const Guard&);
-
     Func func;
     bool active;
 
   public:
-    Guard (Func func) :
+    explicit Guard (Func func) :
       func   (std::move (func)),
       active (true)
     { }
     
+    Guard (const Guard&) = delete;
+    Guard& operator = (const Guard&) = delete;
+
     Guard (Guard&& other) :
       func   (std::move (other.func)),
       active (other.active)
@@ -56,7 +56,8 @@ namespace Rk
   };
 
   template <typename Func>
-  Guard <Func> guard (Func func)
+  auto guard (Func func)
+    -> Guard <Func>
   {
     return Guard <Func> (std::move (func));
   }
