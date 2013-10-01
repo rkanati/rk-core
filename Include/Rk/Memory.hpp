@@ -98,9 +98,9 @@ namespace Rk
   template <typename T, typename U>
   static inline T align (T value, U alignment)
   {
-    /*const auto mod = value % alignment;
-    return mod ? value + (alignment - mod) : value;*/
-    return (value + alignment - 1) / alignment;
+    const auto mod = value % alignment;
+    return mod ? value + (alignment - mod) : value;
+    //return (value + alignment - 1) / alignment;
   }
   
   template <typename T, typename U>
