@@ -62,15 +62,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\Rk\BigEndian.hpp" />
-    <ClInclude Include="..\Include\Rk\Clamp.hpp" />
-    <ClInclude Include="..\Include\Rk\Exception.hpp" />
-    <ClInclude Include="..\Include\Rk\Guard.hpp" />
-    <ClInclude Include="..\Include\Rk\Lerp.hpp" />
-    <ClInclude Include="..\Include\Rk\Memory.hpp" />
-    <ClInclude Include="..\Include\Rk\StringRef.hpp" />
-    <ClInclude Include="..\Include\Rk\Types.hpp" />
-    <ClInclude Include="..\Include\Rk\TypeTraits.hpp" />
+    <ClInclude Include="..\Include\Rk\bigend_int.hpp" />
+    <ClInclude Include="..\Include\Rk\clamp.hpp" />
+    <ClInclude Include="..\Include\Rk\exception.hpp" />
+    <ClInclude Include="..\Include\Rk\guard.hpp" />
+    <ClInclude Include="..\Include\Rk\lerp.hpp" />
+    <ClInclude Include="..\Include\Rk\memory.hpp" />
+    <ClInclude Include="..\Include\Rk\string_ref.hpp" />
+    <ClInclude Include="..\Include\Rk\types.hpp" />
+    <ClInclude Include="..\Include\Rk\type_traits.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

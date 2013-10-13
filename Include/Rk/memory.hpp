@@ -11,8 +11,8 @@
 
 #pragma once
 
-#include <Rk/TypeTraits.hpp>
-#include <Rk/Types.hpp>
+#include <Rk/type_traits.hpp>
+#include <Rk/types.hpp>
 
 #include <algorithm>
 #include <memory>
@@ -80,62 +80,60 @@ namespace Rk
     return p.get ();
   }
     
-  template <typename OutIter, typename InIter>
-  OutIter copy (OutIter dest, InIter src, uptr length)
+  template <typename out_iter, typename in_iter>
+  out_iter copy (out_iter dest, in_iter src, uptr length)
   {
     while (length--)
       *dest++ = *src++;
     return dest;
   }
 
-  template <typename OutIter, typename InIter>
-  OutIter copy (OutIter dest, OutIter limit, InIter begin, InIter end)
+  template <typename out_iter, typename in_iter>
+  out_iter copy (out_iter dest, out_iter limit, in_iter begin, in_iter end)
   {
     while (dest != limit && begin != end)
       *dest++ = *begin++;
     return dest;
   }
   
-  template <typename OutIter, typename InIter>
-  OutIter copy (OutIter dest, uptr length, InIter begin, InIter end)
+  template <typename out_iter, typename in_iter>
+  out_iter copy (out_iter dest, uptr length, in_iter begin, in_iter end)
   {
     return copy (dest, dest + length, begin, end);
   }
 
-  template <typename OutIter, typename InIter>
-  OutIter copy (OutIter dest, OutIter limit, InIter begin, uptr size)
+  template <typename out_iter, typename in_iter>
+  out_iter copy (out_iter dest, out_iter limit, in_iter begin, uptr size)
   {
     return copy (dest, limit, begin, begin + size);
   }
 
-  template <typename OutIter, typename InIter>
-  OutIter copy (OutIter dest, uptr length, InIter begin, uptr size)
+  template <typename out_iter, typename in_iter>
+  out_iter copy (out_iter dest, uptr length, in_iter begin, uptr size)
   {
     return copy (dest, dest + length, begin, begin + size);
   }
 
   // Container variants
-/*template <typename OutIter, typename Cont>
-  auto copy (OutIter dest, OutIter limit, const Cont& cont)
-    -> typename std::enable_if <IsIterable <Cont>::value, OutIter>::type
+  template <typename out_iter, typename Cont>
+  out_iter copy (out_iter dest, out_iter limit, const Cont& cont)
   {
     auto begin = std::begin (cont);
     auto end   = std::end   (cont);
 
     return copy (dest, limit, begin, end);
-  }*/
+  }
 
-  template <typename OutIter, typename Cont>
-  OutIter copy (OutIter dest, uptr length, const Cont& cont)
+  template <typename out_iter, typename cont>
+  out_iter copy (out_iter dest, uptr length, const cont& cont)
   {
     return copy (dest, dest + length, cont);
   }
 
   template <typename T>
-  class RawStorage
+  class raw_storage
   {
-    // is_trivially_copyable not implemented in MSVC10
-    static_assert (std::is_pod <T>::value, "RawStorage may only store trivially copyable types");
+    static_assert (std::is_trivially_copyable <T>::value, "raw_storage may only store trivially copyable types");
 
     std::aligned_storage_t <sizeof (T), __alignof (T)>
       store;

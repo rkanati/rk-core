@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="..\Include\Rk\BigEndian.hpp" />
-    <ClInclude Include="..\Include\Rk\Clamp.hpp" />
-    <ClInclude Include="..\Include\Rk\Lerp.hpp" />
-    <ClInclude Include="..\Include\Rk\Memory.hpp" />
-    <ClInclude Include="..\Include\Rk\StringRef.hpp" />
-    <ClInclude Include="..\Include\Rk\Types.hpp" />
-    <ClInclude Include="..\Include\Rk\TypeTraits.hpp" />
-    <ClInclude Include="..\Include\Rk\Exception.hpp" />
-    <ClInclude Include="..\Include\Rk\Guard.hpp" />
+    <ClInclude Include="..\Include\Rk\bigend_int.hpp" />
+    <ClInclude Include="..\Include\Rk\clamp.hpp" />
+    <ClInclude Include="..\Include\Rk\exception.hpp" />
+    <ClInclude Include="..\Include\Rk\guard.hpp" />
+    <ClInclude Include="..\Include\Rk\lerp.hpp" />
+    <ClInclude Include="..\Include\Rk\memory.hpp" />
+    <ClInclude Include="..\Include\Rk\string_ref.hpp" />
+    <ClInclude Include="..\Include\Rk\types.hpp" />
+    <ClInclude Include="..\Include\Rk\type_traits.hpp" />
   </ItemGroup>
 </Project>

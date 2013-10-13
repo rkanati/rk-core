@@ -11,21 +11,23 @@
 
 #pragma once
 
-#include <type_traits>
+#include <Rk/types.hpp>
+
+#include <system_error>
+#include <stdexcept>
 
 namespace Rk
 {
-  template <typename T>
-  auto declval () -> typename std::add_rvalue_reference <T>::type;
-
-  template <typename Test>
-  struct Trait
+  namespace exception_private
   {
-    template <typename T>
-    struct Type :
-      std::is_void <decltype (Test::test ((T*) 0))>
-    { };
+    extern "C" __declspec(dllimport) u32 __stdcall GetLastError ();
 
-  };
-  
+  }
+
+  static inline auto win_error (const char* message, u32 code = exception_private::GetLastError ())
+    -> std::system_error
+  {
+    return std::system_error (code, std::system_category (), message);
+  }
+
 }

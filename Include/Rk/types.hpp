@@ -15,7 +15,7 @@
 
 namespace Rk
 {
-  namespace Types
+  namespace types
   {
     typedef int8_t   i8;
     typedef uint8_t  u8;
@@ -42,40 +42,46 @@ namespace Rk
     typedef double f64; static_assert (sizeof (f64) == 8, "double not 64 bit");
 
     template <uint bits> struct integer_of_size;
-    template <> struct integer_of_size < 8> { typedef u8  Unsigned; typedef i8  Signed; };
-    template <> struct integer_of_size <16> { typedef u16 Unsigned; typedef i16 Signed; };
-    template <> struct integer_of_size <32> { typedef u32 Unsigned; typedef i32 Signed; };
-    template <> struct integer_of_size <64> { typedef u64 Unsigned; typedef i64 Signed; };
+    template <> struct integer_of_size < 8> { typedef u8  unsigned_t; typedef i8  signed_t; };
+    template <> struct integer_of_size <16> { typedef u16 unsigned_t; typedef i16 signed_t; };
+    template <> struct integer_of_size <32> { typedef u32 unsigned_t; typedef i32 signed_t; };
+    template <> struct integer_of_size <64> { typedef u64 unsigned_t; typedef i64 signed_t; };
 
     template <uint bits>
-    using integer_of_size_t = typename integer_of_size <bits>::Signed;
+    using integer_of_size_t = typename integer_of_size <bits>::signed_t;
 
     template <uint bits>
-    using signed_of_size_t = typename integer_of_size <bits>::Signed;
+    using signed_of_size_t = typename integer_of_size <bits>::signed_t;
 
     template <uint bits>
-    using unsigned_of_size_t = typename integer_of_size <bits>::Unsigned;
+    using unsigned_of_size_t = typename integer_of_size <bits>::unsigned_t;
 
-    class Nil
+    template <typename T, uint bits = sizeof (T) * 8>
+    using integer_same_size = integer_of_size <bits>;
+
+    template <typename T>
+    using integer_same_size_t = typename integer_same_size <T>::signed_t;
+
+    template <typename T>
+    using signed_same_size_t = typename integer_same_size <T>::signed_t;
+
+    template <typename T>
+    using unsigned_same_size_t = typename integer_same_size <T>::unsigned_t;
+
+    class nil_t
     {
       void operator& () const;
       
     };
 
-    static Nil nil = { };
-
-    template <typename OStream>
-    OStream& operator << (OStream& os, const Nil&)
-    {
-      return os;
-    }
+    static const nil_t nil = { };
 
   }
-  
-  using namespace Rk::Types;
+
+  using namespace types;
 
 }
 
 #ifndef RK_TYPES_NO_GLOBAL
-using namespace Rk::Types;
+using namespace Rk::types;
 #endif
