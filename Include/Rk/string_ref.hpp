@@ -34,7 +34,7 @@ namespace Rk
       len (0)
     { }
     
-    string_ref_base (const char_t* new_ptr) :
+    string_ref_base (const char_t* const& new_ptr) :
       ptr (new_ptr),
       len (traits::length (ptr))
     { }
@@ -121,37 +121,39 @@ namespace Rk
 
   };
 
-  template <typename Str>
-  struct char_type_impl
+  template <typename char_t>
+  auto make_string_ref (const char_t* const& ptr) 
+    -> string_ref_base <char_t>
   {
-    static Str& val ();
-
-    typedef typename std::remove_const_t <
-      typename std::remove_reference_t <
-        decltype (val () [0])
-      >
-    > type;
-
-  };
-
-  template <typename Str>
-  using char_type = typename char_type_impl <Str>::type;
-
-  template <typename first_t, typename... args>
-  auto make_string_ref (first_t&& first, args&&... args)
-    -> string_ref_base <char_type <first_t>>
+    return ptr;
+  }
+  
+  template <typename char_t, size_t param_size>
+  auto make_string_ref (const char_t (&str) [param_size])
+    -> string_ref_base <char_t>
   {
-    return {
-      std::forward <first> (first),
-      std::forward <args>  (args)...
-    };
+    return string_ref_base <char_t> (str);
+  }
+  
+  template <typename char_t, typename arg2_t>
+  auto make_string_ref (const char_t* new_ptr, arg2_t&& arg2) 
+    -> string_ref_base <char_t>
+  {
+    return string_ref_base <char_t> { ptr, std::forward <arg2_t> (arg2) };
+  }
+  
+  template <typename char_t, typename traits>
+  auto make_string_ref (const std::basic_string <char_t, traits>& s)
+    -> string_ref_base <char_t, traits>
+  {
+    return s;
   }
 
   template <typename char_t, typename traits>
   static inline auto to_string (string_ref_base <char_t, traits> str)
     -> std::basic_string <char_t, traits>
   {
-    return { str.data (), str.length () };
+    return std::basic_string <char_t, traits> { str.data (), str.length () };
   }
 
   template <typename out_stream, typename char_t, typename traits>
