@@ -79,9 +79,9 @@ namespace Rk
   {
     return p.get ();
   }
-    
+  
   template <typename out_iter, typename in_iter>
-  out_iter copy (out_iter dest, in_iter src, uptr length)
+  out_iter copy (out_iter dest, in_iter src, size_t length)
   {
     while (length--)
       *dest++ = *src++;
@@ -97,37 +97,37 @@ namespace Rk
   }
   
   template <typename out_iter, typename in_iter>
-  out_iter copy (out_iter dest, uptr length, in_iter begin, in_iter end)
+  out_iter copy (out_iter dest, size_t length, in_iter begin, in_iter end)
   {
-    return copy (dest, dest + length, begin, end);
+    return Rk::copy (dest, dest + length, begin, end);
   }
 
   template <typename out_iter, typename in_iter>
-  out_iter copy (out_iter dest, out_iter limit, in_iter begin, uptr size)
+  out_iter copy (out_iter dest, out_iter limit, in_iter begin, size_t size)
   {
-    return copy (dest, limit, begin, begin + size);
+    return Rk::copy (dest, limit, begin, begin + size);
   }
 
   template <typename out_iter, typename in_iter>
-  out_iter copy (out_iter dest, uptr length, in_iter begin, uptr size)
+  out_iter copy (out_iter dest, size_t length, in_iter begin, size_t size)
   {
-    return copy (dest, dest + length, begin, begin + size);
+    return Rk::copy (dest, dest + length, begin, begin + size);
   }
 
   // Container variants
-  template <typename out_iter, typename Cont>
-  out_iter copy (out_iter dest, out_iter limit, const Cont& cont)
+  template <typename out_iter, typename cont_t>
+  out_iter copy (out_iter dest, out_iter limit, const cont_t& cont)
   {
     auto begin = std::begin (cont);
     auto end   = std::end   (cont);
 
-    return copy (dest, limit, begin, end);
+    return Rk::copy (dest, limit, begin, end);
   }
 
-  template <typename out_iter, typename cont>
-  out_iter copy (out_iter dest, uptr length, const cont& cont)
+  template <typename out_iter, typename cont_t>
+  out_iter copy (out_iter dest, size_t length, const cont_t& cont)
   {
-    return copy (dest, dest + length, cont);
+    return Rk::copy (dest, dest + length, cont);
   }
 
   template <typename T>
