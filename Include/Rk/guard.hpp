@@ -13,36 +13,36 @@
 
 namespace Rk
 {
-  template <typename func>
-  class guard
+  template <typename func_t>
+  class guard_t
   {
-    func func;
-    bool active;
+    func_t func;
+    bool   active;
 
   public:
-    explicit guard (func new_func) :
+    explicit guard_t (func_t new_func) :
       func   (std::move (new_func)),
       active (true)
     { }
     
-    guard             (const guard&) = delete;
-    guard& operator = (const guard&) = delete;
+    guard_t             (const guard_t&) = delete;
+    guard_t& operator = (const guard_t&) = delete;
 
-    guard (guard&& other) :
+    guard_t (guard_t&& other) :
       func   (std::move (other.func)),
       active (other.active)
     {
       other.active = false;
     }
     
-    guard& operator = (guard&& other)
+    guard_t& operator = (guard_t&& other)
     {
       func = std::move (other.func);
       std::swap (active = false, other.active);
       return *this;
     }
 
-    ~guard ()
+    ~guard_t ()
     {
       if (active)
         func ();
@@ -55,11 +55,11 @@ namespace Rk
 
   };
 
-  template <typename func>
-  auto guard (func func)
-    -> guard <func>
+  template <typename func_t>
+  auto guard (func_t func)
+    -> guard_t <func_t>
   {
-    return guard <func> (std::move (func));
+    return guard_t <func_t> (std::move (func));
   }
 
 }
