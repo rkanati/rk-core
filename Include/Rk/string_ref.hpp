@@ -136,10 +136,10 @@ namespace Rk
   }
   
   template <typename unit_t, typename arg2_t>
-  auto make_string_ref (const unit_t* new_ptr, arg2_t&& arg2) 
+  auto make_string_ref (const unit_t* ptr, arg2_t&& arg2) 
     -> string_ref_base <unit_t>
   {
-    return string_ref_base <unit_t> { ptr, std::forward <arg2_t> (arg2) };
+    return string_ref_base <unit_t> (ptr, std::forward <arg2_t> (arg2));
   }
   
   template <typename unit_t, typename traits_t>
