@@ -30,4 +30,14 @@ namespace Rk
     return std::system_error (code, std::system_category (), message);
   }
 
+  class io_failure :
+    public std::runtime_error
+  {
+  public:
+    explicit io_failure (const char* msg) :
+      std::runtime_error (msg)
+    { }
+
+  };
+
 }
