@@ -15,9 +15,13 @@
 
 #include <Rk/unicode_common.hpp>
 
+#ifndef RK_CORE_API
+#define RK_CORE_API __declspec(dllimport)
+#endif
+
 namespace Rk
 {
-  char16* utf16_encode (char32 cp, char16* dest, char16* limit);
+  RK_CORE_API char16* utf16_encode (char32 cp, char16* dest, char16* limit);
 
   //
   // utf16_decoder
@@ -31,9 +35,9 @@ namespace Rk
     char32        cp;
     bool          midway;
 
-    bool   empty () const;
-    char16 peek () const;
-    void   consume ();
+    RK_CORE_API bool   empty () const;
+    RK_CORE_API char16 peek () const;
+    RK_CORE_API void   consume ();
 
   public:
     utf16_decoder () :
@@ -49,7 +53,7 @@ namespace Rk
       set_source (new_src, new_end);
     }
 
-    void set_source (const char16* new_src, const char16* new_end);
+    RK_CORE_API void set_source (const char16* new_src, const char16* new_end);
 
     char32 codepoint () const
     {
@@ -58,7 +62,7 @@ namespace Rk
 
     using status_t = decode_status_t;
 
-    status_t decode ();
+    RK_CORE_API status_t decode ();
 
   };
 

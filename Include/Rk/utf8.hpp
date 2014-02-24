@@ -15,15 +15,15 @@
 
 #include <Rk/unicode_common.hpp>
 
-#ifndef RK_API
-#define RK_API
+#ifndef RK_CORE_API
+#define RK_CORE_API
 #endif
 
 namespace Rk
 {
-  RK_API int utf8_code_length (char32 cp);
+  RK_CORE_API int utf8_code_length (char32 cp);
 
-  RK_API char* utf8_encode (char32 cp, char* dest, char* limit);
+  RK_CORE_API char* utf8_encode (char32 cp, char* dest, char* limit);
 
   //
   // utf8_decoder
@@ -38,9 +38,9 @@ namespace Rk
     int         len,
                 pos;
 
-    RK_API bool  empty () const;
-    RK_API uchar peek () const;
-    RK_API void  consume ();
+    RK_CORE_API bool  empty () const;
+    RK_CORE_API uchar peek () const;
+    RK_CORE_API void  consume ();
 
   public:
     utf8_decoder () :
@@ -57,7 +57,7 @@ namespace Rk
       set_source (new_src, new_end);
     }
 
-    RK_API void set_source (const char* new_src, const char* new_end);
+    RK_CORE_API void set_source (const char* new_src, const char* new_end);
 
     char32 codepoint () const
     {
@@ -66,7 +66,7 @@ namespace Rk
 
     using status_t = decode_status_t;
 
-    RK_API status_t decode ();
+    RK_CORE_API status_t decode ();
 
   };
 
