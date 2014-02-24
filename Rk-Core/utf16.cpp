@@ -70,7 +70,7 @@ namespace Rk
     // Decode single or lead surrogate
     if (!midway)
     {
-      if (empty ()) return need_data;
+      if (empty ()) return idle;
       char16 word = peek ();
       consume ();
 
@@ -89,7 +89,7 @@ namespace Rk
     // Decode trail surrogate
     if (midway)
     {
-      if (empty ()) return need_data;
+      if (empty ()) return pending;
       char16 word = peek ();
 
       // Valid trail surrogate?

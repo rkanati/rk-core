@@ -17,7 +17,8 @@ namespace Rk
 {
   enum decode_status_t
   {
-    need_data,
+    idle,
+    pending,
     got_codepoint,
     bad_codepoint,
     got_surrogate,

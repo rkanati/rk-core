@@ -90,12 +90,12 @@ namespace Rk
   auto utf8_decoder::decode ()
     -> status_t
   {
-    if (empty ()) return need_data;
-    uchar byte = peek ();
-
     // Expecting fresh sequence?
     if (len == 0)
     {
+      if (empty ()) return idle;
+      uchar byte = peek ();
+
       // We want to drop invalid bytes here anyway
       consume ();
 
@@ -127,8 +127,8 @@ namespace Rk
     // Decode continuations
     while (pos++ != len)
     {
-      if (empty ()) return need_data;
-      byte = peek ();
+      if (empty ()) return pending;
+      uchar byte = peek ();
 
       // Not a continuation
       if ((byte & 0xc0) != 0x80)
