@@ -77,6 +77,7 @@
     <ClInclude Include="..\Include\Rk\types.hpp" />
     <ClInclude Include="..\Include\Rk\type_traits.hpp" />
     <ClInclude Include="..\Include\Rk\unicode_common.hpp" />
+    <ClInclude Include="..\Include\Rk\unicode_convert.hpp" />
     <ClInclude Include="..\Include\Rk\utf16.hpp" />
     <ClInclude Include="..\Include\Rk\utf8.hpp" />
   </ItemGroup>

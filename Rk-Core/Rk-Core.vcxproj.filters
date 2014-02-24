@@ -40,6 +40,9 @@
     <ClInclude Include="..\Include\Rk\utf16.hpp">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\Rk\unicode_convert.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="API">
