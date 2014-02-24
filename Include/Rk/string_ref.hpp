@@ -121,6 +121,11 @@ namespace Rk
       return ptr [index];
     }
 
+    string_ref_base slice (size_t first, size_t limit) const
+    {
+      return { ptr + first, ptr + limit };
+    }
+
   };
 
   template <typename unit_t>
