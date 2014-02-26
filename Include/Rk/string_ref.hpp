@@ -42,7 +42,7 @@ namespace Rk
       len (0)
     { }
     
-    string_ref_base (const unit_t* const& new_ptr) :
+    string_ref_base (const unit_t* new_ptr) :
       ptr (new_ptr),
       len (null_terminated_length (ptr))
     { }
@@ -57,8 +57,8 @@ namespace Rk
       len (end - ptr)
     { }
     
-    template <typename traits_t>
-    string_ref_base (const std::basic_string <unit_t, traits_t>& s) :
+    template <typename traits_t, typename alloc_t>
+    string_ref_base (const std::basic_string <unit_t, traits_t, alloc_t>& s) :
       ptr (s.data ()),
       len (s.length ())
     { }
@@ -129,7 +129,7 @@ namespace Rk
   };
 
   template <typename unit_t>
-  auto make_string_ref (const unit_t* const& ptr) 
+  auto make_string_ref (const unit_t* ptr) 
     -> string_ref_base <unit_t>
   {
     return ptr;
@@ -142,8 +142,8 @@ namespace Rk
     return string_ref_base <unit_t> (ptr, std::forward <arg2_t> (arg2));
   }
   
-  template <typename unit_t, typename traits_t>
-  auto make_string_ref (const std::basic_string <unit_t, traits_t>& s)
+  template <typename unit_t, typename traits_t, typename alloc_t>
+  auto make_string_ref (const std::basic_string <unit_t, traits_t, alloc_t>& s)
     -> string_ref_base <unit_t>
   {
     return s;
