@@ -173,10 +173,10 @@ namespace Rk
 namespace std
 {
   template <typename T>
-  class hash;
+  struct hash;
   
   template <typename unit_t>
-  class hash <Rk::string_ref_base <unit_t>>
+  struct hash <Rk::string_ref_base <unit_t>>
   {
   public:
     typedef Rk::string_ref_base <unit_t> argument_type;
