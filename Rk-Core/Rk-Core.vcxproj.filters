@@ -43,6 +43,9 @@
     <ClInclude Include="..\Include\Rk\unicode_convert.hpp">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\Rk\module.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="API">
