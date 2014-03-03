@@ -74,7 +74,6 @@
     <ClInclude Include="..\Include\Rk\memory.hpp" />
     <ClInclude Include="..\Include\Rk\module.hpp" />
     <ClInclude Include="..\Include\Rk\string_ref.hpp" />
-    <ClInclude Include="..\Include\Rk\text_traits.hpp" />
     <ClInclude Include="..\Include\Rk\types.hpp" />
     <ClInclude Include="..\Include\Rk\type_traits.hpp" />
     <ClInclude Include="..\Include\Rk\unicode_common.hpp" />

@@ -22,9 +22,6 @@
     <ClInclude Include="..\Include\Rk\string_ref.hpp">
       <Filter>API</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Rk\text_traits.hpp">
-      <Filter>API</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\Rk\type_traits.hpp">
       <Filter>API</Filter>
     </ClInclude>
