@@ -40,7 +40,7 @@ namespace Rk
 
     static void* load_library (cstring_ref path)
     {
-      return LoadLibraryW ((const wchar*) string_utf8_to_u16 (path).c_str ());
+      return LoadLibraryW ((const wchar*) string_utf8_to_16 (path).c_str ());
     }
 
     class module_stub_base

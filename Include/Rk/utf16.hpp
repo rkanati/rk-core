@@ -27,6 +27,7 @@ namespace Rk
   {
   public:
     using dest_t = char16;
+    static constexpr size_t min_buffer = 2;
 
     dest_t* operator () (char32 cp, dest_t* dest, dest_t* limit) const
     {
@@ -52,6 +53,8 @@ namespace Rk
     RK_CORE_API void   consume ();
 
   public:
+    using src_t = char16;
+
     utf16_decoder () :
       src    (nullptr),
       end    (nullptr),
