@@ -25,6 +25,18 @@ namespace Rk
 
   RK_CORE_API char* utf8_encode (char32 cp, char* dest, char* limit);
 
+  class utf8_encoder
+  {
+  public:
+    using dest_t = char;
+
+    dest_t* operator () (char32 cp, dest_t* dest, dest_t* limit) const
+    {
+      return utf8_encode (cp, dest, limit);
+    }
+
+  };
+
   //
   // utf8_decoder
   // State machine for decoding UTF-8 streams.

@@ -23,6 +23,18 @@ namespace Rk
 {
   RK_CORE_API char16* utf16_encode (char32 cp, char16* dest, char16* limit);
 
+  class utf16_encoder
+  {
+  public:
+    using dest_t = char16;
+
+    dest_t* operator () (char32 cp, dest_t* dest, dest_t* limit) const
+    {
+      return utf16_encode (cp, dest, limit);
+    }
+
+  };
+
   //
   // utf16_decoder
   // State machine for decoding UTF-16 streams.
