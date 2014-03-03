@@ -57,7 +57,7 @@ namespace Rk
 
   void utf16_decoder::set_source (const char16* new_src, const char16* new_end)
   {
-    if (!src || end < src)
+    if (!new_src || new_end < new_src)
       throw std::length_error ("Invalid source range");
 
     src = new_src;
