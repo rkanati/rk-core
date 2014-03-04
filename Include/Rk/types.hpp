@@ -68,14 +68,6 @@ namespace Rk
     template <typename T>
     using unsigned_same_size_t = typename integer_same_size <T>::unsigned_t;
 
-    class nil_t
-    {
-      void operator& () const;
-      
-    };
-
-    static const nil_t nil = { };
-
   }
 
   using namespace types;

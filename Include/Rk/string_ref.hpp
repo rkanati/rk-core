@@ -37,7 +37,7 @@ namespace Rk
     typedef unit_t*       iterator;
     typedef const unit_t* const_iterator;
 
-    string_ref_base (nil_t n = nil) :
+    string_ref_base () :
       ptr (nullptr),
       len (0)
     { }
