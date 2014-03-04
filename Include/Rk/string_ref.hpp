@@ -27,6 +27,12 @@ namespace Rk
     return len;
   }
 
+  template <>
+  static inline size_t null_terminated_length <char> (const char* ptr, size_t limit)
+  {
+    return strnlen (ptr, limit);
+  }
+
   template <typename unit_t>
   class string_ref_base
   {
