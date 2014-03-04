@@ -16,7 +16,7 @@
 #include <Rk/unicode_common.hpp>
 
 #ifndef RK_CORE_API
-#define RK_CORE_API
+#define RK_CORE_API __declspec(dllimport)
 #endif
 
 namespace Rk
