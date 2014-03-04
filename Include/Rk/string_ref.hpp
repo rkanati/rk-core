@@ -48,6 +48,11 @@ namespace Rk
       len (0)
     { }
     
+    string_ref_base (const unit_t& unit) :
+      ptr (&unit),
+      len (1)
+    { }
+
     string_ref_base (const unit_t* new_ptr) :
       ptr (new_ptr),
       len (null_terminated_length (ptr))
