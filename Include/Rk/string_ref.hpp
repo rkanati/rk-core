@@ -140,6 +140,13 @@ namespace Rk
   };
 
   template <typename unit_t>
+  auto make_string_ref (string_ref_base <unit_t> sr)
+    -> string_ref_base <unit_t>
+  {
+    return sr;
+  }
+
+  template <typename unit_t>
   auto make_string_ref (const unit_t* ptr) 
     -> string_ref_base <unit_t>
   {
