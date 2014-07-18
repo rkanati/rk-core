@@ -74,6 +74,11 @@ namespace Rk
 
     RK_CORE_API void set_source (const char* new_src, const char* new_end);
 
+    const char* get_pointer () const
+    {
+      return src;
+    }
+
     char32 codepoint () const
     {
       return cp;
