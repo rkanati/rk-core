@@ -62,4 +62,22 @@ namespace Rk
     return guard_t <func_t> (std::move (func));
   }
 
+  template <typename func_t, typename... arg_ts>
+  auto guard (func_t func, arg_ts&&... args)
+  {
+    return guard ([func, args...] { func (args...); });
+  }
+
+  template <typename val_t>
+  auto guard_delete (val_t* ptr)
+  {
+    return guard ([ptr] { delete ptr; });
+  }
+
+  template <typename elem_t>
+  auto guard_array (elem_t* arr)
+  {
+    return guard ([arr] { delete [] arr; });
+  }
+
 }
