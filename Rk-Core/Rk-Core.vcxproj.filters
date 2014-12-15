@@ -43,6 +43,15 @@
     <ClInclude Include="..\Include\Rk\module.hpp">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\Rk\meta.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\apply.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Rk\bind.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="API">

@@ -123,12 +123,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Include\Rk\apply.hpp" />
     <ClInclude Include="..\Include\Rk\bigend_int.hpp" />
+    <ClInclude Include="..\Include\Rk\bind.hpp" />
     <ClInclude Include="..\Include\Rk\clamp.hpp" />
     <ClInclude Include="..\Include\Rk\exception.hpp" />
     <ClInclude Include="..\Include\Rk\guard.hpp" />
     <ClInclude Include="..\Include\Rk\lerp.hpp" />
     <ClInclude Include="..\Include\Rk\memory.hpp" />
+    <ClInclude Include="..\Include\Rk\meta.hpp" />
     <ClInclude Include="..\Include\Rk\module.hpp" />
     <ClInclude Include="..\Include\Rk\string_ref.hpp" />
     <ClInclude Include="..\Include\Rk\types.hpp" />
