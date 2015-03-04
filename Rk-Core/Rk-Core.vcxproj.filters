@@ -52,6 +52,9 @@
     <ClInclude Include="..\Include\Rk\bind.hpp">
       <Filter>API</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\Rk\optional.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="API">

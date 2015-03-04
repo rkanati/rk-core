@@ -139,9 +139,18 @@ namespace Rk
       store;
 
   public:
-    void* raw () { return &store; }
+    void*       raw ()       { return &store; }
+    const void* raw () const { return &store; }
 
-    content_t& value () { return *reinterpret_cast <content_t*> (raw ()); }
+    content_t& value ()
+    {
+      return *reinterpret_cast <content_t*> (raw ());
+    }
+
+    const content_t& value () const
+    {
+      return *reinterpret_cast <const content_t*> (raw ());
+    }
 
   };
 

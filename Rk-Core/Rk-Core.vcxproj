@@ -133,6 +133,7 @@
     <ClInclude Include="..\Include\Rk\memory.hpp" />
     <ClInclude Include="..\Include\Rk\meta.hpp" />
     <ClInclude Include="..\Include\Rk\module.hpp" />
+    <ClInclude Include="..\Include\Rk\optional.hpp" />
     <ClInclude Include="..\Include\Rk\string_ref.hpp" />
     <ClInclude Include="..\Include\Rk\types.hpp" />
     <ClInclude Include="..\Include\Rk\type_traits.hpp" />
