@@ -130,15 +130,18 @@ namespace Rk
     return Rk::copy (dest, dest + length, cont);
   }
 
-  template <typename content_t>
+  template <typename content_t, size_t size = sizeof (content_t)>
   class raw_storage
   {
   //static_assert (std::is_trivially_copyable <T>::value, "raw_storage may only store trivially copyable types");
+    static_assert (size >= sizeof (content_t), "raw_storage size may not be smaller than sizeof (content_t)");
 
-    std::aligned_storage_t <sizeof (content_t), alignof (content_t)>
+    std::aligned_storage_t <size, alignof (content_t)>
       store;
 
   public:
+    static const size_t capacity = size;
+
     void*       raw ()       { return &store; }
     const void* raw () const { return &store; }
 
