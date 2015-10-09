@@ -17,18 +17,15 @@
 
 #include "test.hpp"
 
-namespace RkTest
-{
-  bool test_utf8_encode (u32 cp, Rk::cstring_ref canon)
-  {
+namespace RkTest {
+  bool test_utf8_encode (u32 cp, Rk::cstring_ref canon) {
     char buf [4];
     auto end = Rk::utf8_encode (cp, buf, buf + 4);
     Rk::cstring_ref spelling (buf, end);
     return spelling == canon;
   }
 
-  bool test_utf8_encoding () try
-  {
+  bool test_utf8_encoding () try {
     bool ok = true;
 
     char nul = 0;
@@ -41,9 +38,8 @@ namespace RkTest
 
     return ok;
   }
-  catch (...)
-  {
+  catch (...) {
     return false;
   }
-
 }
+

@@ -13,10 +13,8 @@
 
 #include <stdexcept>
 
-namespace Rk
-{
-  char16* utf16_encode (char32 cp, char16* dest, char16* limit)
-  {
+namespace Rk {
+  char16* utf16_encode (char32 cp, char16* dest, char16* limit) {
     // Not enough space?
     if (limit - dest < 2)
       return dest;
@@ -26,12 +24,10 @@ namespace Rk
       return dest;
 
     // Encode
-    if (cp <= 0xfff)
-    {
+    if (cp <= 0xfff) {
       *dest++ = char16 (cp);
     }
-    else
-    {
+    else {
       cp -= 0x10000;
       *dest++ = 0xd800 | char16 (cp >> 10);
       *dest++ = 0xdc00 | char16 (cp & 0x3ff);
@@ -40,23 +36,19 @@ namespace Rk
     return dest;
   }
 
-  bool utf16_decoder::empty () const
-  {
+  bool utf16_decoder::empty () const {
     return src == end;
   }
 
-  char16 utf16_decoder::peek () const
-  {
+  char16 utf16_decoder::peek () const {
     return *src;
   }
 
-  void utf16_decoder::consume ()
-  {
+  void utf16_decoder::consume () {
     src++;
   }
 
-  void utf16_decoder::set_source (const char16* new_src, const char16* new_end)
-  {
+  void utf16_decoder::set_source (const char16* new_src, const char16* new_end) {
     if (!new_src || new_end < new_src)
       throw std::length_error ("Invalid source range");
 
@@ -68,8 +60,7 @@ namespace Rk
     -> status_t
   {
     // Decode single or lead surrogate
-    if (!midway)
-    {
+    if (!midway) {
       if (empty ()) return idle;
       char16 word = peek ();
       consume ();
@@ -77,24 +68,28 @@ namespace Rk
       // Single?
       if (word < 0xd800 || word > 0xdfff)
         cp = word;
-      else if (word >= 0xdc00)
-        goto fail; // Trailing surrogates not valid here
-      else
-      {
+      else if (word >= 0xdc00) { // Trailing surrogates not valid here
+        midway = false;
+        cp = 0xfffd;
+        return invalid_sequence;
+      }
+      else {
         cp = (word & 0x3ff) << 10;
         midway = true;
       }
     }
 
     // Decode trail surrogate
-    if (midway)
-    {
+    if (midway) {
       if (empty ()) return pending;
       char16 word = peek ();
 
       // Valid trail surrogate?
-      if (word < 0xdc00 || word > 0xdfff)
-        goto fail;
+      if (word < 0xdc00 || word > 0xdfff) {
+        midway = false;
+        cp = 0xfffd;
+        return invalid_sequence;
+      }
 
       cp = 0x10000 + (cp | word & 0x3ff);
       consume ();
@@ -102,17 +97,12 @@ namespace Rk
 
     // Diagnose dodgy sequences
     status_t stat = got_codepoint;
-        
+
     if (is_codepoint_noncharacter (cp))
       stat = got_noncharacter;
 
     midway = false; // Expect a new codepoint
     return stat;
-
-    fail:
-    midway = false; // re-sync
-    cp = 0xfffd; // U+FFFD REPLACEMENT CHARACTER
-    return invalid_sequence;
   }
-
 }
+

@@ -11,11 +11,9 @@
 
 #pragma once
 
-namespace Rk
-{
+namespace Rk {
   template <typename func_t>
-  class guard_t
-  {
+  class guard_t {
     func_t func;
     bool   active;
 
@@ -24,7 +22,7 @@ namespace Rk
       func   (std::move (new_func)),
       active (true)
     { }
-    
+
     guard_t             (const guard_t&) = delete;
     guard_t& operator = (const guard_t&) = delete;
 
@@ -34,25 +32,21 @@ namespace Rk
     {
       other.active = false;
     }
-    
-    guard_t& operator = (guard_t&& other)
-    {
+
+    guard_t& operator = (guard_t&& other) {
       func = std::move (other.func);
       std::swap (active = false, other.active);
       return *this;
     }
 
-    ~guard_t ()
-    {
+    ~guard_t () {
       if (active)
         func ();
     }
 
-    void relieve ()
-    {
+    void relieve () {
       active = false;
     }
-
   };
 
   template <typename func_t>
@@ -63,21 +57,18 @@ namespace Rk
   }
 
   template <typename func_t, typename... arg_ts>
-  auto guard (func_t func, arg_ts&&... args)
-  {
+  auto guard (func_t func, arg_ts&&... args) {
     return guard ([func, args...] { func (args...); });
   }
 
   template <typename val_t>
-  auto guard_delete (val_t* ptr)
-  {
+  auto guard_delete (val_t* ptr) {
     return guard ([ptr] { delete ptr; });
   }
 
   template <typename elem_t>
-  auto guard_array (elem_t* arr)
-  {
+  auto guard_array (elem_t* arr) {
     return guard ([arr] { delete [] arr; });
   }
-
 }
+

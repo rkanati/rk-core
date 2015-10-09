@@ -11,31 +11,24 @@
 
 #pragma once
 
+#include <Rk/core-api.hpp>
 #include <Rk/types.hpp>
 
 #include <Rk/unicode_common.hpp>
 
-#ifndef RK_CORE_API
-#define RK_CORE_API __declspec(dllimport)
-#endif
-
-namespace Rk
-{
+namespace Rk {
   RK_CORE_API int utf8_code_length (char32 cp);
 
   RK_CORE_API char* utf8_encode (char32 cp, char* dest, char* limit);
 
-  class utf8_encoder
-  {
+  class utf8_encoder {
   public:
     using dest_t = char;
     static constexpr size_t min_buffer = 4;
 
-    dest_t* operator () (char32 cp, dest_t* dest, dest_t* limit) const
-    {
+    dest_t* operator () (char32 cp, dest_t* dest, dest_t* limit) const {
       return utf8_encode (cp, dest, limit);
     }
-
   };
 
   //
@@ -43,8 +36,7 @@ namespace Rk
   // State machine for decoding UTF-8 streams.
   // Tolerant of invalid input, but warns about it pedantically.
   //
-  class utf8_decoder
-  {
+  class utf8_decoder {
     const char* src;
     const char* end;
     char32      cp;
@@ -74,20 +66,17 @@ namespace Rk
 
     RK_CORE_API void set_source (const char* new_src, const char* new_end);
 
-    const char* get_pointer () const
-    {
+    const char* get_pointer () const {
       return src;
     }
 
-    char32 codepoint () const
-    {
+    char32 codepoint () const {
       return cp;
     }
 
     using status_t = decode_status_t;
 
     RK_CORE_API status_t decode ();
-
   };
-
 }
+

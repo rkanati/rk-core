@@ -28,7 +28,6 @@ namespace Rk {
     auto operator () (a_ts... as) const {
       return apply (fn, std::tuple_cat (std::make_tuple (as...), bound_args));
     }
-
   };
 
   template <typename fn_t, typename... b_ts>
@@ -50,12 +49,11 @@ namespace Rk {
     auto operator () (a_ts... as) const {
       return apply (fn, std::tuple_cat (bound_args, std::make_tuple (as...)));
     }
-
   };
 
   template <typename fn_t, typename... b_ts>
   auto bind_left (fn_t f, b_ts... bs) {
     return bind_left_t <fn_t, b_ts...> { f, bs... };
   }
-
 }
+

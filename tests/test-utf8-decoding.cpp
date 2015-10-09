@@ -17,19 +17,16 @@
 
 #include "test.hpp"
 
-namespace RkTest
-{
+namespace RkTest {
   using status_t = Rk::utf8_decoder::status_t;
-  
-  bool test_utf8_decode (Rk::cstring_ref src, status_t expect_stat, u32 cp)
-  {
+
+  bool test_utf8_decode (Rk::cstring_ref src, status_t expect_stat, u32 cp) {
     Rk::utf8_decoder dec (src.begin (), src.end ());
     auto stat = dec.decode ();
     return (stat == expect_stat) && (dec.codepoint () == cp);
   }
 
-  bool test_utf8_decode_valid ()
-  {
+  bool test_utf8_decode_valid () {
     bool ok = true;
     TEST (test_utf8_decode ("A", status_t::got_codepoint, 0x41));
     TEST (test_utf8_decode ("\xce\xa9", status_t::got_codepoint, 0x3a9)); // U+03A9 GREEK LETTER CAPITAL OMEGA
@@ -38,8 +35,7 @@ namespace RkTest
     return ok;
   }
 
-  bool test_utf8_decode_overlong ()
-  {
+  bool test_utf8_decode_overlong () {
     bool ok = true;
     TEST (test_utf8_decode ("\xc1\x81", status_t::got_overlong, 0x41));
     TEST (test_utf8_decode ("\xe0\x81\x81", status_t::got_overlong, 0x41));
@@ -47,15 +43,13 @@ namespace RkTest
     return ok;
   }
 
-  bool test_utf8_decode_surrogate ()
-  {
+  bool test_utf8_decode_surrogate () {
     bool ok = true;
     TEST (test_utf8_decode ("\xed\xa0\x80", status_t::got_surrogate, 0xd800));
     return ok;
   }
 
-  bool test_utf8_decode_nonchar ()
-  {
+  bool test_utf8_decode_nonchar () {
     bool ok = true;
     TEST (test_utf8_decode ("\xef\xb7\x90", status_t::got_noncharacter, 0xfdd0));
     TEST (test_utf8_decode ("\xef\xbf\xbe", status_t::got_noncharacter, 0xfffe));
@@ -63,23 +57,20 @@ namespace RkTest
     return ok;
   }
 
-  bool test_utf8_decode_bad ()
-  {
+  bool test_utf8_decode_bad () {
     bool ok = true;
     TEST (test_utf8_decode ("\xf7\xbf\xbf\xbf", status_t::bad_codepoint, 0x1fffff));
     return ok;
   }
 
-  bool test_utf8_decode_invalid ()
-  {
+  bool test_utf8_decode_invalid () {
     bool ok = true;
     TEST (test_utf8_decode ("\xc0\x01", status_t::invalid_sequence, 0xfffd)); // truncated 2-seq
     TEST (test_utf8_decode ("\x80", status_t::invalid_sequence, 0xfffd)); // orphaned continuation
     return ok;
   }
 
-  bool test_utf8_decoding () try
-  {
+  bool test_utf8_decoding () try {
     bool ok = true;
 
     TEST (test_utf8_decode_valid ());
@@ -91,9 +82,8 @@ namespace RkTest
 
     return ok;
   }
-  catch (...)
-  {
+  catch (...) {
     return false;
   }
-
 }
+

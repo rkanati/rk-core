@@ -11,13 +11,11 @@
 
 #include "test.hpp"
 
-namespace RkTest
-{
+namespace RkTest {
   bool test_utf8_encoding ();
   bool test_utf8_decoding ();
 
-  bool test_core ()
-  {
+  bool test_core () {
     bool ok = true;
 
     TEST (test_utf8_encoding ());
@@ -26,18 +24,16 @@ namespace RkTest
     return ok;
   }
 
-  extern "C" int main () try
-  {
+  extern "C" int main () try {
     bool ok = true;
     TEST (test_core ());
     return !ok;
   }
-  catch (...)
-  {
+  catch (...) {
     return 1;
   }
 
   int depth = 0,
       prev  = 0;
-
 }
+

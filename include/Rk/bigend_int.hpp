@@ -13,12 +13,9 @@
 
 #include <Rk/types.hpp>
 
-namespace Rk
-{
-  namespace bigend_private
-  {
-    extern "C"
-    {
+namespace Rk {
+  namespace bigend_private {
+    extern "C" {
       unsigned __int64 __cdecl _byteswap_uint64 (unsigned __int64);
       #pragma intrinsic (_byteswap_uint64)
       ulong __cdecl _byteswap_ulong (ulong);
@@ -31,10 +28,9 @@ namespace Rk
   static inline u64 byteswap (u64 value) { return static_cast <u64> (bigend_private::_byteswap_uint64 (static_cast <unsigned __int64> (value))); }
   static inline u32 byteswap (u32 value) { return static_cast <u32> (bigend_private::_byteswap_ulong  (static_cast <ulong>            (value))); }
   static inline u16 byteswap (u16 value) { return static_cast <u16> (bigend_private::_byteswap_ushort (static_cast <ushort>           (value))); }
-  
+
   template <typename under>
-  class bigend_int
-  {
+  class bigend_int {
     under val;
 
   public:
@@ -44,25 +40,20 @@ namespace Rk
       val (byteswap (v))
     { }
 
-    under get () const
-    {
+    under get () const {
       return byteswap (val);
     }
 
     template <typename out_stream>
-    friend out_stream& operator << (out_stream& stream, const bigend_int& value)
-    {
+    friend out_stream& operator << (out_stream& stream, const bigend_int& value) {
       return stream << value.get ();
     }
-
   };
 
-  namespace types
-  {
+  namespace types {
     typedef bigend_int <u16> u16be;
     typedef bigend_int <u32> u32be;
     typedef bigend_int <u64> u64be;
-
   }
-  
 }
+

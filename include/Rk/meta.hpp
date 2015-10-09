@@ -25,7 +25,6 @@ namespace Rk {
     struct idx_seq_maker <base, 0, rest...> {
       using seq = idx_seq <rest...>;
     };
-
   }
 
   template <int base, int n>
@@ -33,5 +32,5 @@ namespace Rk {
 
   template <typename... ts>
   using make_idxs_for = make_idxs <0, sizeof... (ts)>;
-
 }
+

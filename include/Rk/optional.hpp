@@ -13,11 +13,9 @@
 
 #include <Rk/memory.hpp>
 
-namespace Rk
-{
+namespace Rk {
   template <typename content_t>
-  class optional
-  {
+  class optional {
     raw_storage <content_t> store;
     bool                    engaged;
 
@@ -38,16 +36,14 @@ namespace Rk
       new (store.raw ()) content_t (std::move (value));
     }
 
-    optional& operator = (const content_t& value)
-    {
+    optional& operator = (const content_t& value) {
       if (engaged) store.value () = value;
       else new (store.raw ()) content_t (value);
       engaged = true;
       return *this;
     }
 
-    optional& operator = (content_t&& value)
-    {
+    optional& operator = (content_t&& value) {
       if (engaged) store.value () = std::move (value);
       else new (store.raw ()) content_t (std::move (value));
       engaged = true;
@@ -69,16 +65,14 @@ namespace Rk
       other.engaged = false;
     }
 
-    optional& operator = (const optional& other)
-    {
+    optional& operator = (const optional& other) {
       if (engaged) store.value () = other.get ();
       else new (store.raw ()) content_t (other.get ());
       engaged = true;
       return *this;
     }
 
-    optional& operator = (optional&& other)
-    {
+    optional& operator = (optional&& other) {
       if (engaged) store.value () = std::move (other.get ());
       else new (store.raw ()) content_t (std::move (other.get ()));
       engaged = true;
@@ -86,23 +80,19 @@ namespace Rk
       return *this;
     }
 
-    content_t& get ()
-    {
+    content_t& get () {
       if (!engaged) throw std::logic_error ("optional not engaged");
       return store.value ();
     }
 
-    const content_t& get () const
-    {
+    const content_t& get () const {
       if (!engaged) throw std::logic_error ("optional not engaged");
       return store.value ();
     }
 
-    explicit operator bool () const
-    {
+    explicit operator bool () const {
       return engaged;
     }
-
   };
-
 }
+

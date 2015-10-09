@@ -17,14 +17,11 @@
 #include <Rk/guard.hpp>
 #include <Rk/types.hpp>
 
-namespace Rk
-{
-  namespace detail
-  {
+namespace Rk {
+  namespace detail {
     typedef void (__stdcall *sysfn_t) ();
-    
-    extern "C"
-    {
+
+    extern "C" {
       #define fromdll(t) __declspec(dllimport) t __stdcall
       fromdll (void*)   __stdcall LoadLibraryW   (const wchar_t*);
       fromdll (sysfn_t) __stdcall GetProcAddress (void*, const char*);
@@ -32,22 +29,18 @@ namespace Rk
       fromdll (u32)     __stdcall GetLastError   ();
       #undef fromdll
     }
-    
-    static void* load_library (u16string_ref path)
-    {
+
+    static void* load_library (u16string_ref path) {
       return LoadLibraryW ((const wchar*) to_string (path).c_str ());
     }
 
-    static void* load_library (cstring_ref path)
-    {
+    static void* load_library (cstring_ref path) {
       return LoadLibraryW ((const wchar*) string_utf8_to_16 (path).c_str ());
     }
 
-    class module_stub_base
-    {
+    class module_stub_base {
     public:
       virtual std::shared_ptr <void> create_root () = 0;
-
     };
 
     template <typename root_t>
@@ -55,9 +48,8 @@ namespace Rk
       public module_stub_base
     {
       raw_storage <root_t> store;
-      
-      struct deleter
-      {
+
+      struct deleter {
         void operator () (root_t* p) const { p -> ~root_t (); }
       };
 
@@ -70,25 +62,20 @@ namespace Rk
         root_guard.relieve ();
         return shared;
       }
-
     };
 
     template <typename root_t>
-    struct module_impl
-    {
+    struct module_impl {
       void*                    handle;
       std::shared_ptr <root_t> root;
 
       module_impl () = default;
 
-      ~module_impl ()
-      {
+      ~module_impl () {
         root.reset ();
         detail::FreeLibrary (handle);
       }
-
     };
-
   } // detail
 
   #define RK_MODULE(root_t) \
@@ -96,8 +83,7 @@ namespace Rk
     extern "C" __declspec (dllexport) Rk::detail::module_stub_base* rk_module_stub = &rk_module_stub_impl;
 
   template <typename root_t>
-  std::shared_ptr <root_t> load_module (cstring_ref path)
-  {
+  std::shared_ptr <root_t> load_module (cstring_ref path) {
     using namespace detail;
 
     auto impl = std::make_shared <module_impl <root_t>> ();
@@ -115,5 +101,5 @@ namespace Rk
 
     return std::shared_ptr <root_t> (std::move (impl), impl -> root.get ());
   }
-
 }
+

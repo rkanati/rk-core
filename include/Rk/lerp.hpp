@@ -13,8 +13,7 @@
 
 #include <type_traits>
 
-namespace Rk
-{
+namespace Rk {
   template <typename F>
   auto lerp (F a, F b, F t)
     -> typename std::enable_if <
@@ -25,16 +24,14 @@ namespace Rk
   }
 
   template <typename T, typename F>
-  T lerp (const T& a, const T& b, F t)
-  {
+  T lerp (const T& a, const T& b, F t) {
     return a * (F (1) - t) + b * t;
   }
 
   // Normalized Linear Interpolation
   template <typename T, typename F>
-  inline T nlerp (const T& a, const T& b, F t)
-  {
+  inline T nlerp (const T& a, const T& b, F t) {
     return abs (t * b + (F (1) - t) * a);
   }
-
 }
+

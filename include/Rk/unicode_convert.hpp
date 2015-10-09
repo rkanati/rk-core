@@ -19,13 +19,10 @@
 
 #include <string>
 
-namespace Rk
-{
-  namespace detail
-  {
+namespace Rk {
+  namespace detail {
     template <typename decoder_t, typename encoder_t>
-    class utf_transcoder_impl
-    {
+    class utf_transcoder_impl {
     public:
       typedef typename decoder_t::src_t  src_t;
       typedef typename encoder_t::dest_t dest_t;
@@ -42,15 +39,13 @@ namespace Rk
         n   (0)
       { }
 
-      void set_source (const src_t* new_src, const src_t* new_end)
-      {
+      void set_source (const src_t* new_src, const src_t* new_end) {
         dec.set_source (new_src, new_end);
       }
 
       using status_t = decode_status_t;
 
-      status_t decode ()
-      {
+      status_t decode () {
         auto stat = dec.decode ();
 
         if (stat == idle || stat == pending)
@@ -61,30 +56,24 @@ namespace Rk
         return stat;
       }
 
-      const dest_t* units () const
-      {
+      const dest_t* units () const {
         return buf;
       }
 
-      const dest_t* units_end () const
-      {
+      const dest_t* units_end () const {
         return buf + n;
       }
 
-      size_t unit_count () const
-      {
+      size_t unit_count () const {
         return n;
       }
-
     };
-
   } // detail
 
   using utf8_to_16 = detail::utf_transcoder_impl <utf8_decoder, utf16_encoder>;
   using utf16_to_8 = detail::utf_transcoder_impl <utf16_decoder, utf8_encoder>;
 
-  namespace detail
-  {
+  namespace detail {
     template <typename decoder_t, typename dest_unit_t, typename src_unit_t>
     static auto string_utf_convert_impl (string_ref_base <src_unit_t> src, bool tolerant)
       -> std::basic_string <dest_unit_t>
@@ -92,8 +81,7 @@ namespace Rk
       std::basic_string <dest_unit_t> result;
       decoder_t coder (src.begin (), src.end ());
 
-      for (;;)
-      {
+      for (;;) {
         auto stat = coder.decode ();
         if (stat == idle || tolerant && stat == pending)
           break;
@@ -104,17 +92,14 @@ namespace Rk
 
       return result;
     }
-
   }
 
-  static inline std::u16string string_utf8_to_16 (cstring_ref src, bool tolerant = false)
-  {
+  static inline std::u16string string_utf8_to_16 (cstring_ref src, bool tolerant = false) {
     return detail::string_utf_convert_impl <utf8_to_16, char16> (src, tolerant);
   }
 
-  static inline std::string string_utf16_to_8 (u16string_ref src, bool tolerant = false)
-  {
+  static inline std::string string_utf16_to_8 (u16string_ref src, bool tolerant = false) {
     return detail::string_utf_convert_impl <utf16_to_8, char> (src, tolerant);
   }
-
 }
+

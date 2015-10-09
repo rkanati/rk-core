@@ -13,12 +13,10 @@
 
 #include <iostream>
 
-namespace RkTest
-{
+namespace RkTest {
   extern int depth, prev;
 
-  static inline void test_begin (const char* msg)
-  {
+  static inline void test_begin (const char* msg) {
     if (depth != prev)
       std::cout << '\n';
 
@@ -30,10 +28,8 @@ namespace RkTest
     prev = depth++;
   }
 
-  static inline bool test_end (bool& ok, bool pass)
-  {
-    if (--depth != prev)
-    {
+  static inline bool test_end (bool& ok, bool pass) {
+    if (--depth != prev) {
       for (int i = 0; i != depth; i++)
         std::cout << "  ";
     }
@@ -48,24 +44,20 @@ namespace RkTest
   }
 
   template <typename Fn>
-  static inline bool test (bool& ok, const char* msg, Fn fn)
-  {
+  static inline bool test (bool& ok, const char* msg, Fn fn) {
     test_begin (msg);
-    
+
     bool pass;
-    
-    try
-    {
+
+    try {
       pass = fn ();
     }
-    catch (...)
-    {
+    catch (...) {
       pass = false;
     }
 
     return test_end (ok, pass);
   }
-
 }
 
 #define TEST(expr) \
@@ -85,3 +77,4 @@ namespace RkTest
       try { (expr); return false; } catch (E&) { return true; } catch (...) { throw; } \
     } \
   )
+

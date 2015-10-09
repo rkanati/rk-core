@@ -13,21 +13,18 @@
 
 #include <type_traits>
 
-namespace Rk
-{
+namespace Rk {
   template <typename T>
   auto declval () -> typename std::add_rvalue_reference <T>::type;
 
   template <typename test>
-  struct trait
-  {
+  struct trait {
     template <typename T>
     struct type :
       std::is_void <decltype (test::test ((T*) 0))>
     { };
-
   };
-  
+
   template <typename lhs_t, typename rhs_t>
   using sum_t        = decltype (std::declval <lhs_t> () + std::declval <rhs_t> ());
 
@@ -46,8 +43,7 @@ namespace Rk
   template <typename lhs_t, typename rhs_t>
   struct /*using*/ const_and_t /*=*/ : std::integral_constant <bool, lhs_t::value && rhs_t::value> { } ;
 
-  namespace traits_private
-  {
+  namespace traits_private {
     template <typename... ts>
     struct is_same_comp;
 
@@ -55,17 +51,17 @@ namespace Rk
     struct is_same_comp <t, t> :
       std::true_type
     { };
-    
+
     template <typename t, typename u>
     struct is_same_comp <t, u> :
       std::false_type
     { };
-    
+
     template <typename t, typename u, typename... ts>
     struct is_same_comp <t, u, ts...> :
       const_and_t <is_same_comp <t, u>, is_same_comp <u, ts...>>
     { };
-    
+
     template <typename t, bool same>
     struct is_same_impl :
       std::false_type
@@ -77,10 +73,9 @@ namespace Rk
     {
       typedef t same_t;
     };
-
   }
 
   template <typename t, typename... ts>
   using is_same = traits_private::is_same_impl <t, traits_private::is_same_comp <t, ts...>::value>;
-
 }
+

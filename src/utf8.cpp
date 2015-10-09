@@ -13,10 +13,8 @@
 
 #include <stdexcept>
 
-namespace Rk
-{
-  int utf8_code_length (char32 cp)
-  {
+namespace Rk {
+  int utf8_code_length (char32 cp) {
     if      (cp <       0x80) return 1; // 7-bit
     else if (cp <      0x800) return 2; // 11-bit
     else if (cp <    0x10000) return 3; // 16-bit
@@ -26,8 +24,7 @@ namespace Rk
     else return 0;
   }
 
-  char* utf8_encode (char32 cp, char* dest, char* limit)
-  {
+  char* utf8_encode (char32 cp, char* dest, char* limit) {
     // Not enough space?
     if (limit - dest < 4)
       return dest;
@@ -39,8 +36,7 @@ namespace Rk
     int code_len = utf8_code_length (cp);
 
     // Write first byte
-    if (code_len == 1) // 7-bit codepoint
-    {
+    if (code_len == 1) { // 7-bit codepoint
       *dest++ = char (cp & 0x7f);
       return dest;
     }
@@ -53,8 +49,7 @@ namespace Rk
     *dest++ = char (byte);
 
     // Encode continuation bytes
-    while (cont_bits != 0)
-    {
+    while (cont_bits != 0) {
       cont_bits -= 6;
       auto bits = (cp >> cont_bits) & 0x3f;
       *dest++ = char (0x80 | bits);
@@ -63,23 +58,19 @@ namespace Rk
     return dest;
   }
 
-  bool utf8_decoder::empty () const
-  {
+  bool utf8_decoder::empty () const {
     return src == end;
   }
 
-  uchar utf8_decoder::peek () const
-  {
+  uchar utf8_decoder::peek () const {
     return uchar (*src);
   }
 
-  void utf8_decoder::consume ()
-  {
+  void utf8_decoder::consume () {
     src++;
   }
 
-  void utf8_decoder::set_source (const char* new_src, const char* new_end)
-  {
+  void utf8_decoder::set_source (const char* new_src, const char* new_end) {
     if (!new_src || new_end < new_src)
       throw std::length_error ("Invalid source range");
 
@@ -91,8 +82,7 @@ namespace Rk
     -> status_t
   {
     // Expecting fresh sequence?
-    if (len == 0)
-    {
+    if (len == 0) {
       if (empty ()) return idle;
       uchar byte = peek ();
 
@@ -100,24 +90,25 @@ namespace Rk
       consume ();
 
       // 7-bit code byte
-      if ((byte & 0x80) == 0x00)
-      {
+      if ((byte & 0x80) == 0x00) {
         cp = byte;
         return got_codepoint;
       }
 
       // Possible lead byte; try different prefixes/sequence lengths
       uchar mask = 0xe0;
-      for (len = 2; len <= 6; len++)
-      {
+      for (len = 2; len <= 6; len++) {
         if ((byte & mask) == uchar (mask << 1))
           break;
         mask = 0x80 | (mask >> 1);
       }
 
       // Not a lead byte
-      if (len > 6)
-        goto fail;
+      if (len > 6) {
+        len = 0;
+        cp = 0xfffd;
+        return invalid_sequence;
+      }
 
       // Grab the first few bits
       cp = byte & ~mask;
@@ -125,14 +116,16 @@ namespace Rk
     }
 
     // Decode continuations
-    while (pos++ != len)
-    {
+    while (pos++ != len) {
       if (empty ()) return pending;
       uchar byte = peek ();
 
       // Not a continuation
-      if ((byte & 0xc0) != 0x80)
-        goto fail;
+      if ((byte & 0xc0) != 0x80) {
+        len = 0;
+        cp = 0xfffd;
+        return invalid_sequence;
+      }
 
       // Ok; grab bits
       cp = (cp << 6) | (byte & 0x3f);
@@ -154,11 +147,6 @@ namespace Rk
 
     len = 0; // Expect a new codepoint
     return stat;
-
-    fail:
-    len = 0; // re-sync
-    cp = 0xfffd; // U+FFFD REPLACEMENT CHARACTER
-    return invalid_sequence;
   }
-
 }
+

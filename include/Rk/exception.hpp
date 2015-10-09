@@ -16,12 +16,9 @@
 #include <system_error>
 #include <stdexcept>
 
-namespace Rk
-{
-  namespace exception_private
-  {
+namespace Rk {
+  namespace exception_private {
     extern "C" __declspec(dllimport) u32 __stdcall GetLastError ();
-
   }
 
   static inline auto win_error (const char* message, u32 code = exception_private::GetLastError ())
@@ -37,7 +34,6 @@ namespace Rk
     explicit io_failure (const char* msg) :
       std::runtime_error (msg)
     { }
-
   };
-
 }
+

@@ -11,12 +11,11 @@
 
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 
-namespace Rk
-{
-  namespace types
-  {
+namespace Rk {
+  namespace types {
     typedef int8_t   i8;
     typedef uint8_t  u8;
     typedef int16_t  i16;
@@ -70,13 +69,12 @@ namespace Rk
 
     struct nil_t      { void operator & () = delete; } static const nil;
     struct identity_t { void operator & () = delete; } static const identity;
-
   }
 
   using namespace types;
-
 }
 
 #ifndef RK_TYPES_NO_GLOBAL
 using namespace Rk::types;
 #endif
+
