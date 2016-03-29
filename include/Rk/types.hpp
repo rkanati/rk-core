@@ -67,8 +67,8 @@ namespace Rk {
     template <typename T>
     using unsigned_same_size_t = typename integer_same_size <T>::unsigned_t;
 
-    struct nil_t      { void operator & () = delete; } static const nil;
-    struct identity_t { void operator & () = delete; } static const identity;
+    struct nil_t      { } static constexpr nil = { };
+    struct identity_t { } static constexpr identity = { };
   }
 
   using namespace types;
