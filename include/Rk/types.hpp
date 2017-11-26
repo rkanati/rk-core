@@ -64,13 +64,13 @@ namespace Rk {
     using integer_same_size = IntegerBits <bits>;
 
     template <typename T>
-    using integer_same_size_t = typename IntegerBits <T>::Signed;
+    using integer_same_size_t = typename integer_same_size <T>::Signed;
 
     template <typename T>
-    using signed_same_size_t = typename IntegerBits <T>::Signed;
+    using signed_same_size_t = typename integer_same_size <T>::Signed;
 
     template <typename T>
-    using unsigned_same_size_t = typename IntegerBits <T>::Unsigned;
+    using unsigned_same_size_t = typename integer_same_size <T>::Unsigned;
 
     struct Nil      { } static constexpr nil = { };
     struct Identity { } static constexpr identity = { };
