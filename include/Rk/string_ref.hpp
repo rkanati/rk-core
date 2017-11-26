@@ -14,6 +14,7 @@
 #include <Rk/types.hpp>
 
 #include <algorithm>
+#include <stdexcept>
 #include <string>
 
 namespace Rk {
