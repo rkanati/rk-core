@@ -14,7 +14,7 @@
 #include <Rk/types.hpp>
 
 namespace Rk {
-  enum decode_status_t {
+  enum class DecodeStatus {
     idle,
     pending,
     got_codepoint,
@@ -25,12 +25,12 @@ namespace Rk {
     invalid_sequence
   };
 
-  static bool is_codepoint_noncharacter (char32 cp) {
+  static constexpr bool is_codepoint_noncharacter (char32 cp) {
     return (cp >= 0xfdd0 && cp <= 0xfdef)
         || (cp & 0xfffe) == 0xfffe;
   }
 
-  enum codepoint_semantic_t {
+  enum class CodepointSemantic {
     codepoint_ordinary = 0,
     codepoint_lead_surrogate,
     codepoint_trail_surrogate,
@@ -38,7 +38,7 @@ namespace Rk {
     codepoint_bad
   };
 
-  static codepoint_semantic_t codepoint_semantic (char32 cp) {
+  static constexpr CodepointSemantic codepoint_semantic (char32 cp) {
     if (cp > 0x10ffff)
       return codepoint_bad;
     else if (cp >= 0xd800 && cp <= 0xdbff)
@@ -51,7 +51,7 @@ namespace Rk {
       return codepoint_ordinary;
   }
 
-  static bool is_codepoint_ordinary (char32 cp) {
+  static constexpr bool is_codepoint_ordinary (char32 cp) {
     return codepoint_semantic (cp) == codepoint_ordinary;
   }
 }

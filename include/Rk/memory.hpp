@@ -21,9 +21,8 @@ namespace Rk {
   // Returns the least multiple of alignment greater or equal to value
   template <typename T, typename U>
   static inline T align (T value, U alignment) {
-    const auto mod = value % alignment;
+    auto const mod = value % alignment;
     return mod ? value + (alignment - mod) : value;
-    //return (value + alignment - 1) / alignment;
   }
 
   template <typename T, typename U>
@@ -50,8 +49,8 @@ namespace Rk {
   }
 
   template <typename T>
-  static inline const T& sparse_get (const T* ptr, uptr stride, uptr index) {
-    return *(const T*) ((const u8*) ptr + stride * index);
+  static inline T const& sparse_get (T const* ptr, uptr stride, uptr index) {
+    return *(T const*) ((u8 const*) ptr + stride * index);
   }
 
   // Pointer evaluation for various smart pointer types
@@ -61,78 +60,94 @@ namespace Rk {
   }
 
   template <typename T>
-  static inline T* get_pointer (const std::shared_ptr <T>& p) {
+  static inline T* get_pointer (std::shared_ptr const <T>& p) {
     return p.get ();
   }
 
   template <typename T>
-  static inline T* get_pointer (const std::unique_ptr <T>& p) {
+  static inline T* get_pointer (std::unique_ptr const <T>& p) {
     return p.get ();
   }
 
-  template <typename out_iter, typename in_iter>
-  out_iter copy (out_iter dest, in_iter src, size_t length) {
+  // copy, counted
+  template <typename OutIterator, typename InIterator>
+  OutIterator copy (OutIterator dest, InIterator src, size_t length) {
     while (length--)
       *dest++ = *src++;
     return dest;
   }
 
-  template <typename out_iter, typename in_iter>
-  out_iter copy (out_iter dest, out_iter limit, in_iter begin, in_iter end) {
+  // dense copy, counted
+  template <typename T, typename = std::enable_if_t <is_dense_trivially_copyable <T>>>
+  T* copy (T* dest, T const* src, size_t length) {
+    memcpy (dest, src, length * sizeof (T));
+    return dest + length;
+  }
+
+  // copy, limited
+  template <typename OutIterator, typename InIterator>
+  OutIterator copy (OutIterator dest, OutIterator limit, InIterator begin, InIterator end) {
     while (dest != limit && begin != end)
       *dest++ = *begin++;
     return dest;
   }
 
-  template <typename out_iter, typename in_iter>
-  out_iter copy (out_iter dest, size_t length, in_iter begin, in_iter end) {
+  // dense copy, limited
+  template <typename T, typename = std::enable_if_t <is_dense_trivially_copyable <T>>>
+  T* copy (T* dest, T* limit, T const* begin, T const* end) {
+    return Rk::copy (dest, begin, std::min (limit - dest, end - begin));
+  }
+
+  // copy, capped and limited
+  template <typename OutIterator, typename InIterator>
+  OutIterator copy (OutIterator dest, size_t length, InIterator begin, InIterator end) {
     return Rk::copy (dest, dest + length, begin, end);
   }
 
-  template <typename out_iter, typename in_iter>
-  out_iter copy (out_iter dest, out_iter limit, in_iter begin, size_t size) {
+  template <typename OutIterator, typename InIterator>
+  OutIterator copy (OutIterator dest, OutIterator limit, InIterator begin, size_t size) {
     return Rk::copy (dest, limit, begin, begin + size);
   }
 
-  template <typename out_iter, typename in_iter>
-  out_iter copy (out_iter dest, size_t length, in_iter begin, size_t size) {
+  template <typename OutIterator, typename InIterator>
+  OutIterator copy (OutIterator dest, size_t length, InIterator begin, size_t size) {
     return Rk::copy (dest, dest + length, begin, begin + size);
   }
 
   // Container variants
-  template <typename out_iter, typename cont_t>
-  out_iter copy (out_iter dest, out_iter limit, const cont_t& cont) {
+  template <typename OutIterator, typename Container>
+  OutIterator copy (OutIterator dest, OutIterator limit, Container const& cont) {
     auto begin = std::begin (cont);
     auto end   = std::end   (cont);
 
     return Rk::copy (dest, limit, begin, end);
   }
 
-  template <typename out_iter, typename cont_t>
-  out_iter copy (out_iter dest, size_t length, const cont_t& cont) {
+  template <typename OutIterator, typename Container>
+  OutIterator copy (OutIterator dest, size_t length, Container const& cont) {
     return Rk::copy (dest, dest + length, cont);
   }
 
-  template <typename content_t, size_t size = sizeof (content_t)>
-  class raw_storage {
-  //static_assert (std::is_trivially_copyable <T>::value, "raw_storage may only store trivially copyable types");
-    static_assert (size >= sizeof (content_t), "raw_storage size may not be smaller than sizeof (content_t)");
+  template <typename Contents, size_t size = sizeof (Contents)>
+  class RawStorage {
+    static_assert (std::is_trivially_copyable_v <T>, "raw_storage may only store trivially copyable types");
+    static_assert (size >= sizeof (Contents), "raw_storage size may not be smaller than sizeof (Contents)");
 
-    std::aligned_storage_t <size, alignof (content_t)>
+    std::aligned_storage_t <size, alignof (Contents)>
       store;
 
   public:
     static const size_t capacity = size;
 
     void*       raw ()       { return &store; }
-    const void* raw () const { return &store; }
+    void const* raw () const { return &store; }
 
-    content_t& value () {
-      return *reinterpret_cast <content_t*> (raw ());
+    Contents& value () {
+      return *reinterpret_cast <Contents*> (raw ());
     }
 
-    const content_t& value () const {
-      return *reinterpret_cast <const content_t*> (raw ());
+    Contents const& value () const {
+      return *reinterpret_cast <Contents const*> (raw ());
     }
   };
 }

@@ -11,22 +11,21 @@
 
 #pragma once
 
-#include <Rk/core-api.hpp>
 #include <Rk/types.hpp>
 
 #include <Rk/unicode_common.hpp>
 
 namespace Rk {
-  RK_CORE_API int utf8_code_length (char32 cp);
+  int utf8_code_length (char32 cp);
 
-  RK_CORE_API char* utf8_encode (char32 cp, char* dest, char* limit);
+  char* utf8_encode (char32 cp, char* dest, char* limit);
 
-  class utf8_encoder {
+  class UTF8Encoder {
   public:
-    using dest_t = char;
+    using DestUnit = char;
     static constexpr size_t min_buffer = 4;
 
-    dest_t* operator () (char32 cp, dest_t* dest, dest_t* limit) const {
+    DestUnit* operator () (char32 cp, DestUnit* dest, DestUnit* limit) const {
       return utf8_encode (cp, dest, limit);
     }
   };
@@ -36,21 +35,21 @@ namespace Rk {
   // State machine for decoding UTF-8 streams.
   // Tolerant of invalid input, but warns about it pedantically.
   //
-  class utf8_decoder {
-    const char* src;
-    const char* end;
+  class UTF8Decoder {
+    char const* src;
+    char const* end;
     char32      cp;
     int         len,
                 pos;
 
-    RK_CORE_API bool  empty () const;
-    RK_CORE_API uchar peek () const;
-    RK_CORE_API void  consume ();
+    bool  empty () const;
+    uchar peek () const;
+    void  consume ();
 
   public:
-    using src_t = char;
+    using SrcUnit = char;
 
-    utf8_decoder () :
+    UTF8Decoder () :
       src (nullptr),
       end (nullptr),
       cp  (0),
@@ -58,15 +57,15 @@ namespace Rk {
       pos (0)
     { }
 
-    utf8_decoder (const char* new_src, const char* new_end):
-      utf8_decoder ()
+    UTF8Decoder (char const* new_src, char const* new_end):
+      UTF8Decoder ()
     {
       set_source (new_src, new_end);
     }
 
-    RK_CORE_API void set_source (const char* new_src, const char* new_end);
+    void set_source (char const* new_src, char const* new_end);
 
-    const char* get_pointer () const {
+    char const* get_pointer () const {
       return src;
     }
 
@@ -74,9 +73,9 @@ namespace Rk {
       return cp;
     }
 
-    using status_t = decode_status_t;
+    using Status = DecodeStatus;
 
-    RK_CORE_API status_t decode ();
+    Status decode ();
   };
 }
 

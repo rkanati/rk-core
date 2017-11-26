@@ -11,64 +11,63 @@
 
 #pragma once
 
-#include <Rk/core-api.hpp>
 #include <Rk/types.hpp>
 
 #include <Rk/unicode_common.hpp>
 
 namespace Rk {
-  RK_CORE_API char16* utf16_encode (char32 cp, char16* dest, char16* limit);
+  char16* utf16_encode (char32 cp, char16* dest, char16* limit);
 
-  class utf16_encoder {
+  class UTF16Decoder {
   public:
-    using dest_t = char16;
+    using DestUnit = char16;
     static constexpr size_t min_buffer = 2;
 
-    dest_t* operator () (char32 cp, dest_t* dest, dest_t* limit) const {
+    DestUnit* operator () (char32 cp, DestUnit* dest, DestUnit* limit) const {
       return utf16_encode (cp, dest, limit);
     }
   };
 
   //
-  // utf16_decoder
+  // UTF16Decoder
   // State machine for decoding UTF-16 streams.
   // Tolerant of invalid input, but warns about it pedantically.
   //
-  class utf16_decoder {
-    const char16* src;
-    const char16* end;
+  class UTF16Decoder {
+    char16 const* src;
+    char16 const* end;
     char32        cp;
     bool          midway;
 
-    RK_CORE_API bool   empty () const;
-    RK_CORE_API char16 peek () const;
-    RK_CORE_API void   consume ();
+    bool   empty () const;
+    char16 peek () const;
+    void   consume ();
 
   public:
-    using src_t = char16;
+    using SrcUnit = char16;
 
-    utf16_decoder () :
+    UTF16Decoder () :
       src    (nullptr),
       end    (nullptr),
       cp     (0),
       midway (false)
     { }
 
-    utf16_decoder (const char16* new_src, const char16* new_end) :
-      utf16_decoder ()
+    UTF16Decoder (char16 const* new_src, char16 const* new_end) :
+      UTF16Decoder ()
     {
       set_source (new_src, new_end);
     }
 
-    RK_CORE_API void set_source (const char16* new_src, const char16* new_end);
+    void set_source (char16 const* new_src, char16 const* new_end);
 
     char32 codepoint () const {
       return cp;
     }
 
-    using status_t = decode_status_t;
+    using Status = DecodeStatus;
 
-    RK_CORE_API status_t decode ();
+    Status decode ();
   };
 }
 

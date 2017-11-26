@@ -21,31 +21,31 @@
 
 namespace Rk {
   namespace detail {
-    template <typename decoder_t, typename encoder_t>
-    class utf_transcoder_impl {
+    template <typename Decoder, typename Encoder>
+    class UTFTranscoderImpl {
     public:
-      typedef typename decoder_t::src_t  src_t;
-      typedef typename encoder_t::dest_t dest_t;
+      typedef typename Decoder::SrcUnit  SrcUnit;
+      typedef typename Encoder::DestUnit DestUnit;
 
     private:
-      decoder_t dec;
-      encoder_t enc;
-      dest_t    buf [encoder_t::min_buffer];
-      size_t    n;
+      Decoder  dec;
+      Encoder  enc;
+      DestUnit buf [Encoder::min_buffer];
+      size_t   n;
 
     public:
-      utf_transcoder_impl (const src_t* src, const src_t* end) :
+      UTFTranscoderImpl (const SrcUnit* src, const SrcUnit* end) :
         dec (src, end),
         n   (0)
       { }
 
-      void set_source (const src_t* new_src, const src_t* new_end) {
+      void set_source (const SrcUnit* new_src, const SrcUnit* new_end) {
         dec.set_source (new_src, new_end);
       }
 
-      using status_t = decode_status_t;
+      using Status = DecodeStatus;
 
-      status_t decode () {
+      Status decode () {
         auto stat = dec.decode ();
 
         if (stat == idle || stat == pending)
@@ -56,11 +56,11 @@ namespace Rk {
         return stat;
       }
 
-      const dest_t* units () const {
+      DestUnit const* units () const {
         return buf;
       }
 
-      const dest_t* units_end () const {
+      DestUnit const* units_end () const {
         return buf + n;
       }
 
@@ -68,18 +68,18 @@ namespace Rk {
         return n;
       }
     };
-  } // detail
+  }
 
-  using utf8_to_16 = detail::utf_transcoder_impl <utf8_decoder, utf16_encoder>;
-  using utf16_to_8 = detail::utf_transcoder_impl <utf16_decoder, utf8_encoder>;
+  using UTF8To16 = detail::UTFTranscoderImpl <UTF8Decoder, UTF16Encoder>;
+  using UTF16To8 = detail::UTFTranscoderImpl <UTF16Decoder, UTF8Encoder>;
 
   namespace detail {
-    template <typename decoder_t, typename dest_unit_t, typename src_unit_t>
-    static auto string_utf_convert_impl (string_ref_base <src_unit_t> src, bool tolerant)
-      -> std::basic_string <dest_unit_t>
+    template <typename Coder>
+    static auto string_utf_convert_impl (StringRefBase <typename Coder::SrcUnit> src, bool tolerant)
+      -> std::basic_string <typename Coder::DestUnit>
     {
-      std::basic_string <dest_unit_t> result;
-      decoder_t coder (src.begin (), src.end ());
+      std::basic_string <typename Coder::DestUnit> result;
+      Coder coder (src.begin (), src.end ());
 
       for (;;) {
         auto stat = coder.decode ();
@@ -94,12 +94,12 @@ namespace Rk {
     }
   }
 
-  static inline std::u16string string_utf8_to_16 (cstring_ref src, bool tolerant = false) {
-    return detail::string_utf_convert_impl <utf8_to_16, char16> (src, tolerant);
+  static inline std::u16string string_utf8_to_16 (StringRef src, bool tolerant = false) {
+    return detail::string_utf_convert_impl <UTF8To16> (src, tolerant);
   }
 
-  static inline std::string string_utf16_to_8 (u16string_ref src, bool tolerant = false) {
-    return detail::string_utf_convert_impl <utf16_to_8, char> (src, tolerant);
+  static inline std::string string_utf16_to_8 (U16StringRef src, bool tolerant = false) {
+    return detail::string_utf_convert_impl <UTF16To8> (src, tolerant);
   }
 }
 

@@ -14,9 +14,6 @@
 #include <type_traits>
 
 namespace Rk {
-  template <typename T>
-  auto declval () -> typename std::add_rvalue_reference <T>::type;
-
   template <typename test>
   struct trait {
     template <typename T>

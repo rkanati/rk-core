@@ -11,35 +11,37 @@
 
 #pragma once
 
+#include <utility>
+
 namespace Rk {
-  template <typename func_t>
-  class guard_t {
-    func_t func;
-    bool   active;
+  template <typename Func>
+  class Guard {
+    Func func;
+    bool active;
 
   public:
-    explicit guard_t (func_t new_func) :
-      func   (std::move (new_func)),
+    explicit Guard (Func new_func) :
+      func   (new_func),
       active (true)
     { }
 
-    guard_t             (const guard_t&) = delete;
-    guard_t& operator = (const guard_t&) = delete;
+    Guard             (const Guard&) = delete;
+    Guard& operator = (const Guard&) = delete;
 
-    guard_t (guard_t&& other) :
+    Guard (Guard&& other) :
       func   (std::move (other.func)),
       active (other.active)
     {
       other.active = false;
     }
 
-    guard_t& operator = (guard_t&& other) {
+    Guard& operator = (Guard&& other) {
       func = std::move (other.func);
       std::swap (active = false, other.active);
       return *this;
     }
 
-    ~guard_t () {
+    ~Guard () {
       if (active)
         func ();
     }
@@ -49,25 +51,25 @@ namespace Rk {
     }
   };
 
-  template <typename func_t>
-  auto guard (func_t func)
-    -> guard_t <func_t>
+  template <typename Func>
+  auto guard (Func func)
+    -> Guard <Func>
   {
-    return guard_t <func_t> (std::move (func));
+    return Guard <Func> (func);
   }
 
-  template <typename func_t, typename... arg_ts>
-  auto guard (func_t func, arg_ts&&... args) {
+  template <typename Func, typename... Args>
+  auto guard (Func func, Args... args) {
     return guard ([func, args...] { func (args...); });
   }
 
-  template <typename val_t>
-  auto guard_delete (val_t* ptr) {
+  template <typename T>
+  auto guard_delete (T* ptr) {
     return guard ([ptr] { delete ptr; });
   }
 
-  template <typename elem_t>
-  auto guard_array (elem_t* arr) {
+  template <typename T>
+  auto guard_array (T* arr) {
     return guard ([arr] { delete [] arr; });
   }
 }

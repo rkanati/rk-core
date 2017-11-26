@@ -30,6 +30,11 @@ namespace Rk {
     typedef unsigned int   uint;
     typedef unsigned long  ulong;
 
+    typedef signed char  schar;
+    typedef signed short sshort;
+    typedef signed int   sint;
+    typedef signed long  slong;
+
     typedef wchar_t  wchar;
     typedef char16_t char16;
     typedef char32_t char32;
@@ -40,35 +45,35 @@ namespace Rk {
     typedef float  f32; static_assert (sizeof (f32) == 4, "float not 32 bit" );
     typedef double f64; static_assert (sizeof (f64) == 8, "double not 64 bit");
 
-    template <uint bits> struct integer_of_size;
-    template <> struct integer_of_size < 8> { typedef u8  unsigned_t; typedef i8  signed_t; };
-    template <> struct integer_of_size <16> { typedef u16 unsigned_t; typedef i16 signed_t; };
-    template <> struct integer_of_size <32> { typedef u32 unsigned_t; typedef i32 signed_t; };
-    template <> struct integer_of_size <64> { typedef u64 unsigned_t; typedef i64 signed_t; };
+    template <uint bits> struct IntegerBits;
+    template <> struct IntegerBits < 8> { typedef u8  Unsigned; typedef i8  Signed; };
+    template <> struct IntegerBits <16> { typedef u16 Unsigned; typedef i16 Signed; };
+    template <> struct IntegerBits <32> { typedef u32 Unsigned; typedef i32 Signed; };
+    template <> struct IntegerBits <64> { typedef u64 Unsigned; typedef i64 Signed; };
 
     template <uint bits>
-    using integer_of_size_t = typename integer_of_size <bits>::signed_t;
+    using IntegerBits_t = typename IntegerBits <bits>::Signed;
 
     template <uint bits>
-    using signed_of_size_t = typename integer_of_size <bits>::signed_t;
+    using SignedBits_t = typename IntegerBits <bits>::Signed;
 
     template <uint bits>
-    using unsigned_of_size_t = typename integer_of_size <bits>::unsigned_t;
+    using UnsignedBits_t = typename IntegerBits <bits>::Unsigned;
 
     template <typename T, uint bits = sizeof (T) * 8>
-    using integer_same_size = integer_of_size <bits>;
+    using integer_same_size = IntegerBits <bits>;
 
     template <typename T>
-    using integer_same_size_t = typename integer_same_size <T>::signed_t;
+    using integer_same_size_t = typename IntegerBits <T>::Signed;
 
     template <typename T>
-    using signed_same_size_t = typename integer_same_size <T>::signed_t;
+    using signed_same_size_t = typename IntegerBits <T>::Signed;
 
     template <typename T>
-    using unsigned_same_size_t = typename integer_same_size <T>::unsigned_t;
+    using unsigned_same_size_t = typename IntegerBits <T>::Unsigned;
 
-    struct nil_t      { } static constexpr nil = { };
-    struct identity_t { } static constexpr identity = { };
+    struct Nil      { } static constexpr nil = { };
+    struct Identity { } static constexpr identity = { };
   }
 
   using namespace types;

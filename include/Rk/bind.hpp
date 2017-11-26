@@ -11,49 +11,56 @@
 
 #pragma once
 
-#include <Rk/apply.hpp>
+#include <tuple>
+#include <experimental/tuple> // std::apply
 
 namespace Rk {
-  template <typename fn_t, typename... b_ts>
-  class bind_right_t {
-    fn_t                 fn;
-    std::tuple <b_ts...> bound_args;
+  template <typename Fn, typename... BoundArgs>
+  class BindRight {
+    Fn                       fn;
+    std::tuple<BoundArgs...> bound_args;
 
   public:
-    bind_right_t (fn_t fn, b_ts... bs) :
+    explicit BindRight (Fn fn, BoundArgs... bs) :
       fn (fn), bound_args (bs...)
     { }
 
-    template <typename... a_ts>
-    auto operator () (a_ts... as) const {
-      return apply (fn, std::tuple_cat (std::make_tuple (as...), bound_args));
+    template <typename... Args>
+    auto operator () (Args... as) const {
+      return std::experimental::apply (
+        fn,
+        std::tuple_cat (std::forward_as_tuple (std::forward<Args> (as)...), bound_args)
+      );
     }
   };
 
-  template <typename fn_t, typename... b_ts>
-  auto bind_right (fn_t fn, b_ts... bs) {
-    return bind_right_t <fn_t, b_ts...> { fn, bs... };
+  template <typename Fn, typename... BoundArgs>
+  auto bind_right (Fn&& fn, BoundArgs... bs) {
+    return BindRight <Fn, BoundArgs...> { std::forward<Fn> (fn), bs... };
   }
 
-  template <typename fn_t, typename... b_ts>
-  class bind_left_t {
-    fn_t                 fn;
-    std::tuple <b_ts...> bound_args;
+  template <typename Fn, typename... BoundArgs>
+  class BindLeft {
+    Fn                        fn;
+    std::tuple <BoundArgs...> bound_args;
 
   public:
-    bind_left_t (fn_t fn, b_ts... bs) :
+    explicit BindLeft (Fn fn, BoundArgs... bs) :
       fn (fn), bound_args (bs...)
     { }
 
-    template <typename... a_ts>
-    auto operator () (a_ts... as) const {
-      return apply (fn, std::tuple_cat (bound_args, std::make_tuple (as...)));
+    template <typename... Args>
+    auto operator () (Args... as) const {
+      return std::experimental::apply (
+        fn,
+        std::tuple_cat (bound_args, std::forward_as_tuple (std::forward<Args> (as)...))
+      );
     }
   };
 
-  template <typename fn_t, typename... b_ts>
-  auto bind_left (fn_t f, b_ts... bs) {
-    return bind_left_t <fn_t, b_ts...> { f, bs... };
+  template <typename Fn, typename... BoundArgs>
+  auto bind_left (Fn&& fn, BoundArgs... bs) {
+    return BindLeft <Fn, BoundArgs...> { std::forward<Fn> (fn), bs... };
   }
 }
 

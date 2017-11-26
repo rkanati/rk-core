@@ -17,64 +17,59 @@
 #include <string>
 
 namespace Rk {
-  template <typename unit_t>
-  static inline size_t null_terminated_length (const unit_t* ptr, size_t limit = ~size_t (0)) {
+  template <typename Unit>
+  static inline size_t null_terminated_length (Unit const* ptr, size_t limit = ~size_t (0)) {
     size_t len = 0;
     while (len < limit && ptr [len])
       len++;
     return len;
   }
 
-  template <>
-  static inline size_t null_terminated_length <char> (const char* ptr, size_t limit) {
-    return strnlen (ptr, limit);
-  }
-
-  template <typename unit_t>
-  class string_ref_base {
-    const unit_t* ptr;
-    size_t        len;
+  template <typename Unit>
+  class StringRefBase {
+    Unit const* ptr;
+    size_t      len;
 
   public:
-    typedef unit_t*       iterator;
-    typedef const unit_t* const_iterator;
+    typedef Unit*       iterator;
+    typedef Unit const* const_iterator;
 
-    string_ref_base () :
+    StringRefBase () :
       ptr (nullptr),
       len (0)
     { }
 
-    explicit string_ref_base (const unit_t& unit) :
+    explicit StringRefBase (Unit const& unit) :
       ptr (&unit),
       len (1)
     { }
 
-    string_ref_base (const unit_t* new_ptr) :
+    StringRefBase (Unit const* new_ptr) :
       ptr (new_ptr),
       len (null_terminated_length (ptr))
     { }
 
-    string_ref_base (const unit_t* new_ptr, size_t new_len) :
+    StringRefBase (Unit const* new_ptr, size_t new_len) :
       ptr (new_ptr),
       len (new_len)
     { }
 
-    string_ref_base (const unit_t* begin, const unit_t* end) :
+    StringRefBase (Unit const* begin, Unit const* end) :
       ptr (begin),
       len (end - ptr)
     { }
 
-    template <typename traits_t, typename alloc_t>
-    string_ref_base (const std::basic_string <unit_t, traits_t, alloc_t>& s) :
+    template <typename Traits, typename Alloc>
+    StringRefBase (std::basic_string <Unit, Traits, Alloc> const& s) :
       ptr (s.data ()),
       len (s.length ())
     { }
 
-    bool operator == (const string_ref_base& other) const {
+    bool operator == (StringRefBase const& other) const {
       return len == other.len && std::equal (ptr, ptr + len, other.ptr);
     }
 
-    bool operator != (const string_ref_base& other) const {
+    bool operator != (StringRefBase const& other) const {
       return !(*this == other);
     }
 
@@ -82,7 +77,7 @@ namespace Rk {
       return ptr != nullptr;
     }
 
-    const unit_t* data () const {
+    Unit const* data () const {
       return ptr;
     }
 
@@ -98,96 +93,93 @@ namespace Rk {
       return len == 0;
     }
 
-    const unit_t* begin () const {
+    Unit const* begin () const {
       return ptr;
     }
 
-    const unit_t* end () const {
+    Unit const* cbegin () const {
+      return begin ();
+    }
+
+    Unit const* end () const {
       return ptr + len;
     }
 
-    unit_t at (size_t index) const {
+    Unit const* cend () const {
+      return end ();
+    }
+
+    Unit at (size_t index) const {
       if (index >= len)
-        throw std::range_error ("Rk::string_ref_base::at - index out of range");
+        throw std::range_error ("index out of range");
       else
         return ptr [index];
     }
 
-    unit_t operator [] (size_t index) const {
+    Unit operator [] (size_t index) const {
       return ptr [index];
     }
 
-    string_ref_base slice (size_t first, size_t limit) const {
+    StringRefBase slice (size_t first, size_t limit) const {
       return { ptr + first, ptr + limit };
     }
   };
 
-  template <typename unit_t>
-  auto make_string_ref (string_ref_base <unit_t> sr)
-    -> string_ref_base <unit_t>
-  {
+  template <typename Unit>
+  auto make_string_ref (StringRefBase <Unit> sr) {
     return sr;
   }
 
-  template <typename unit_t>
-  auto make_string_ref (const unit_t* ptr)
-    -> string_ref_base <unit_t>
-  {
+  template <typename Unit>
+  auto make_string_ref (Unit const* ptr) -> StringRefBase <Unit> {
     return ptr;
   }
 
-  template <typename unit_t, typename arg2_t>
-  auto make_string_ref (const unit_t* ptr, arg2_t&& arg2)
-    -> string_ref_base <unit_t>
-  {
-    return string_ref_base <unit_t> (ptr, std::forward <arg2_t> (arg2));
+  template <typename Unit, typename Arg2>
+  auto make_string_ref (Unit const* ptr, Arg2&& arg2) -> StringRefBase <Unit> {
+    return StringRefBase <Unit> (ptr, std::forward <Arg2> (arg2));
   }
 
-  template <typename unit_t, typename traits_t, typename alloc_t>
-  auto make_string_ref (const std::basic_string <unit_t, traits_t, alloc_t>& s)
-    -> string_ref_base <unit_t>
-  {
+  template <typename Unit, typename Traits, typename Alloc>
+  auto make_string_ref (std::basic_string <Unit, Traits, Alloc> const& s) -> StringRefBase <Unit> {
     return s;
   }
 
-  template <typename unit_t>
-  static inline auto to_string (string_ref_base <unit_t> str)
-    -> std::basic_string <unit_t>
-  {
-    return std::basic_string <unit_t> { str.data (), str.length () };
+  template <typename Unit>
+  static inline auto to_string (StringRefBase <Unit> str) -> std::basic_string <Unit> {
+    return std::basic_string <Unit> { str.data (), str.length () };
   }
 
-  template <typename out_stream, typename unit_t>
-  out_stream& operator << (out_stream& os, string_ref_base <unit_t> str) {
-    os.write (str.data (), str.length ());
-    return os;
+  template <typename OutStream, typename Unit>
+  OutStream& operator << (OutStream& stream, StringRefBase <Unit> str) {
+    stream.write (str.data (), str.length ());
+    return stream;
   }
 
-  using cstring_ref   = string_ref_base <char>;
-  using wstring_ref   = string_ref_base <wchar>;
-  using u16string_ref = string_ref_base <char16>;
-  using u32string_ref = string_ref_base <char32>;
+  using StringRef    = StringRefBase <char>;
+  using WStringRef   = StringRefBase <wchar>;
+  using U16StringRef = StringRefBase <char16>;
+  using U32StringRef = StringRefBase <char32>;
 }
 
 namespace std {
   template <typename T>
   struct hash;
 
-  template <typename unit_t>
-  struct hash <Rk::string_ref_base <unit_t>> {
+  template <typename Unit>
+  struct hash <Rk::StringRefBase <Unit>> {
   public:
-    typedef Rk::string_ref_base <unit_t> argument_type;
-    typedef size_t                       result_type;
+    typedef Rk::StringRefBase <Unit> argument_type;
+    typedef size_t                   result_type;
 
     result_type operator () (argument_type s) const {
-      auto ptr = (const u8*) s.data ();
-      auto len = s.size () * sizeof (unit_t);
+      auto ptr = (u8 const*) s.data ();
+      auto len = s.size () * sizeof (Unit);
 
       // DJB hash
       size_t h = 5381;
       while (len--)
         h += (h << 5) + *ptr++;
-
       return h;
     }
   };

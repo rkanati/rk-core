@@ -17,23 +17,22 @@
 #include <stdexcept>
 
 namespace Rk {
-  namespace exception_private {
+  namespace detail {
+#ifdef _WINDOWS
     extern "C" __declspec(dllimport) u32 __stdcall GetLastError ();
+#endif
+
+    static inline int last_error () {
+#ifdef _WINDOWS
+      return (int) GetLastError ();
+#else
+      return errno;
+#endif
+    }
   }
 
-  static inline auto win_error (const char* message, u32 code = exception_private::GetLastError ())
-    -> std::system_error
-  {
+  static inline auto os_error (char const* message, int code = detail::last_error ()) {
     return std::system_error (code, std::system_category (), message);
   }
-
-  class io_failure :
-    public std::runtime_error
-  {
-  public:
-    explicit io_failure (const char* msg) :
-      std::runtime_error (msg)
-    { }
-  };
 }
 
