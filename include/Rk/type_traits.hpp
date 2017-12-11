@@ -14,6 +14,11 @@
 #include <type_traits>
 
 namespace Rk {
+  template<typename Value>
+  static constexpr bool is_dense_trivially_copyable
+    =   std::is_trivially_copyable_v<Value>
+    &&  (sizeof (Value) % std::alignment_of_v<Value> == 0);
+
   template <typename test>
   struct trait {
     template <typename T>

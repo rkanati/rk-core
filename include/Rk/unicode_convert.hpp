@@ -48,7 +48,7 @@ namespace Rk {
       Status decode () {
         auto stat = dec.decode ();
 
-        if (stat == idle || stat == pending)
+        if (stat == Status::idle || stat == Status::pending)
           return stat;
 
         auto ptr = enc (dec.codepoint (), std::begin (buf), std::end (buf));
@@ -83,9 +83,9 @@ namespace Rk {
 
       for (;;) {
         auto stat = coder.decode ();
-        if (stat == idle || tolerant && stat == pending)
+        if (stat == DecodeStatus::idle || (tolerant && stat == DecodeStatus::pending))
           break;
-        else if (stat != got_codepoint && !tolerant)
+        else if (stat != DecodeStatus::got_codepoint && !tolerant)
           throw std::runtime_error ("string_utf_convert_impl - decode error");
         result.append (coder.units (), coder.unit_count ());
       }

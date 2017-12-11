@@ -18,7 +18,7 @@
 namespace Rk {
   char16* utf16_encode (char32 cp, char16* dest, char16* limit);
 
-  class UTF16Decoder {
+  class UTF16Encoder {
   public:
     using DestUnit = char16;
     static constexpr size_t min_buffer = 2;

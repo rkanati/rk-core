@@ -31,28 +31,28 @@ namespace Rk {
   }
 
   enum class CodepointSemantic {
-    codepoint_ordinary = 0,
-    codepoint_lead_surrogate,
-    codepoint_trail_surrogate,
-    codepoint_noncharacter,
-    codepoint_bad
+    ordinary = 0,
+    lead_surrogate,
+    trail_surrogate,
+    noncharacter,
+    bad
   };
 
   static constexpr CodepointSemantic codepoint_semantic (char32 cp) {
     if (cp > 0x10ffff)
-      return codepoint_bad;
+      return CodepointSemantic::bad;
     else if (cp >= 0xd800 && cp <= 0xdbff)
-      return codepoint_lead_surrogate;
+      return CodepointSemantic::lead_surrogate;
     else if (cp >= 0xdc00 && cp <= 0xdfff)
-      return codepoint_trail_surrogate;
+      return CodepointSemantic::trail_surrogate;
     else if (is_codepoint_noncharacter (cp))
-      return codepoint_noncharacter;
+      return CodepointSemantic::noncharacter;
     else
-      return codepoint_ordinary;
+      return CodepointSemantic::ordinary;
   }
 
   static constexpr bool is_codepoint_ordinary (char32 cp) {
-    return codepoint_semantic (cp) == codepoint_ordinary;
+    return codepoint_semantic (cp) == CodepointSemantic::ordinary;
   }
 }
 

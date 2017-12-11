@@ -36,19 +36,19 @@ namespace Rk {
     return dest;
   }
 
-  bool utf16_decoder::empty () const {
+  bool UTF16Decoder::empty () const {
     return src == end;
   }
 
-  char16 utf16_decoder::peek () const {
+  char16 UTF16Decoder::peek () const {
     return *src;
   }
 
-  void utf16_decoder::consume () {
+  void UTF16Decoder::consume () {
     src++;
   }
 
-  void utf16_decoder::set_source (const char16* new_src, const char16* new_end) {
+  void UTF16Decoder::set_source (const char16* new_src, const char16* new_end) {
     if (!new_src || new_end < new_src)
       throw std::length_error ("Invalid source range");
 
@@ -56,12 +56,12 @@ namespace Rk {
     end = new_end;
   }
 
-  auto utf16_decoder::decode ()
-    -> status_t
+  auto UTF16Decoder::decode ()
+    -> Status
   {
     // Decode single or lead surrogate
     if (!midway) {
-      if (empty ()) return idle;
+      if (empty ()) return Status::idle;
       char16 word = peek ();
       consume ();
 
@@ -71,7 +71,7 @@ namespace Rk {
       else if (word >= 0xdc00) { // Trailing surrogates not valid here
         midway = false;
         cp = 0xfffd;
-        return invalid_sequence;
+        return Status::invalid_sequence;
       }
       else {
         cp = (word & 0x3ff) << 10;
@@ -81,25 +81,25 @@ namespace Rk {
 
     // Decode trail surrogate
     if (midway) {
-      if (empty ()) return pending;
+      if (empty ()) return Status::pending;
       char16 word = peek ();
 
       // Valid trail surrogate?
       if (word < 0xdc00 || word > 0xdfff) {
         midway = false;
         cp = 0xfffd;
-        return invalid_sequence;
+        return Status::invalid_sequence;
       }
 
-      cp = 0x10000 + (cp | word & 0x3ff);
+      cp = 0x10000 + (cp | (word & 0x3ff));
       consume ();
     }
 
     // Diagnose dodgy sequences
-    status_t stat = got_codepoint;
+    auto stat = Status::got_codepoint;
 
     if (is_codepoint_noncharacter (cp))
-      stat = got_noncharacter;
+      stat = Status::got_noncharacter;
 
     midway = false; // Expect a new codepoint
     return stat;

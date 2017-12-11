@@ -60,12 +60,12 @@ namespace Rk {
   }
 
   template <typename T>
-  static inline T* get_pointer (std::shared_ptr const <T>& p) {
+  static inline T* get_pointer (std::shared_ptr<T> const& p) {
     return p.get ();
   }
 
   template <typename T>
-  static inline T* get_pointer (std::unique_ptr const <T>& p) {
+  static inline T* get_pointer (std::unique_ptr<T> const& p) {
     return p.get ();
   }
 
@@ -130,8 +130,10 @@ namespace Rk {
 
   template <typename Contents, size_t size = sizeof (Contents)>
   class RawStorage {
-    static_assert (std::is_trivially_copyable_v <T>, "raw_storage may only store trivially copyable types");
-    static_assert (size >= sizeof (Contents), "raw_storage size may not be smaller than sizeof (Contents)");
+    static_assert (std::is_trivially_copyable_v <Contents>,
+      "raw_storage may only store trivially copyable types");
+    static_assert (size >= sizeof (Contents),
+      "raw_storage size may not be smaller than sizeof (Contents)");
 
     std::aligned_storage_t <size, alignof (Contents)>
       store;

@@ -58,19 +58,19 @@ namespace Rk {
     return dest;
   }
 
-  bool utf8_decoder::empty () const {
+  bool UTF8Decoder::empty () const {
     return src == end;
   }
 
-  uchar utf8_decoder::peek () const {
+  uchar UTF8Decoder::peek () const {
     return uchar (*src);
   }
 
-  void utf8_decoder::consume () {
+  void UTF8Decoder::consume () {
     src++;
   }
 
-  void utf8_decoder::set_source (const char* new_src, const char* new_end) {
+  void UTF8Decoder::set_source (const char* new_src, const char* new_end) {
     if (!new_src || new_end < new_src)
       throw std::length_error ("Invalid source range");
 
@@ -78,12 +78,12 @@ namespace Rk {
     end = new_end;
   }
 
-  auto utf8_decoder::decode ()
-    -> status_t
+  auto UTF8Decoder::decode ()
+    -> Status
   {
     // Expecting fresh sequence?
     if (len == 0) {
-      if (empty ()) return idle;
+      if (empty ()) return Status::idle;
       uchar byte = peek ();
 
       // We want to drop invalid bytes here anyway
@@ -92,7 +92,7 @@ namespace Rk {
       // 7-bit code byte
       if ((byte & 0x80) == 0x00) {
         cp = byte;
-        return got_codepoint;
+        return Status::got_codepoint;
       }
 
       // Possible lead byte; try different prefixes/sequence lengths
@@ -107,7 +107,7 @@ namespace Rk {
       if (len > 6) {
         len = 0;
         cp = 0xfffd;
-        return invalid_sequence;
+        return Status::invalid_sequence;
       }
 
       // Grab the first few bits
@@ -117,14 +117,14 @@ namespace Rk {
 
     // Decode continuations
     while (pos++ != len) {
-      if (empty ()) return pending;
+      if (empty ()) return Status::pending;
       uchar byte = peek ();
 
       // Not a continuation
       if ((byte & 0xc0) != 0x80) {
         len = 0;
         cp = 0xfffd;
-        return invalid_sequence;
+        return Status::invalid_sequence;
       }
 
       // Ok; grab bits
@@ -133,17 +133,17 @@ namespace Rk {
     }
 
     // Diagnose dodgy sequences
-    status_t stat = got_codepoint;
+    auto stat = Status::got_codepoint;
 
     auto sem = codepoint_semantic (cp);
-    if (sem == codepoint_bad)
-      stat = bad_codepoint;
-    else if (sem == codepoint_lead_surrogate || sem == codepoint_trail_surrogate)
-      stat = got_surrogate;
-    else if (sem == codepoint_noncharacter)
-      stat = got_noncharacter;
+    if (sem == CodepointSemantic::bad)
+      stat = Status::bad_codepoint;
+    else if (sem == CodepointSemantic::lead_surrogate || sem == CodepointSemantic::trail_surrogate)
+      stat = Status::got_surrogate;
+    else if (sem == CodepointSemantic::noncharacter)
+      stat = Status::got_noncharacter;
     else if (utf8_code_length (cp) < len)
-      stat = got_overlong;
+      stat = Status::got_overlong;
 
     len = 0; // Expect a new codepoint
     return stat;
