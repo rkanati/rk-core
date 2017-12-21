@@ -72,5 +72,13 @@ namespace Rk {
   auto guard_array (T* arr) {
     return guard ([arr] { delete [] arr; });
   }
+
+  void relieve () { }
+
+  template <typename func_t, typename... func_ts>
+  void relieve (guard_t <func_t>& g, guard_t <func_ts>&... gs) {
+    g.relieve ();
+    relieve (gs...);
+  }
 }
 
