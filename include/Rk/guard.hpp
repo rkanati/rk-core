@@ -73,12 +73,9 @@ namespace Rk {
     return guard ([arr] { delete [] arr; });
   }
 
-  void relieve () { }
-
-  template <typename func_t, typename... func_ts>
-  void relieve (guard_t <func_t>& g, guard_t <func_ts>&... gs) {
-    g.relieve ();
-    relieve (gs...);
+  template <typename... Funcs>
+  void relieve (Guard <Funcs>&... gs) {
+    (gs.relieve (), ...);
   }
 }
 
